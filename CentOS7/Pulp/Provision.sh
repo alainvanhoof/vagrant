@@ -25,7 +25,7 @@ systemctl enable pulp_celerybeat
 systemctl start pulp_celerybeat
 systemctl enable pulp_resource_manager
 systemctl start pulp_resource_manager
-sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/admin/admin.conf
+sed -i -e "s/# verify_ssl: True/verify_ssl: False/" /etc/pulp/admin/admin.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/server.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/repo_auth.conf
 mkdir /root/.pulp/
