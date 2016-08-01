@@ -28,3 +28,10 @@ systemctl start pulp_resource_manager
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/admin/admin.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/server.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/repo_auth.conf
+mkdir /root/.pulp/
+cat > /root/.pulp/admin.conf << EOF
+[auth]
+username: admin
+password: admin
+EOF
+chmod 600 /root/.pulp/admin.conf
