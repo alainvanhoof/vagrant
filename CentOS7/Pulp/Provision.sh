@@ -29,6 +29,7 @@ sed -i -e "s/# verify_ssl: True/verify_ssl: False/" /etc/pulp/admin/admin.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/server.conf
 sed -i -e "s/# verify_ssl: true/verify_ssl: false/" /etc/pulp/repo_auth.conf
 mkdir /root/.pulp/
+chmod 700 /root/.pulp
 cat > /root/.pulp/admin.conf << EOF
 [auth]
 username: admin
