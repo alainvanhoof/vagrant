@@ -1,1 +1,0 @@
-{"rsync":{"/home/vagrant/sync":{"type":"rsync","guestpath":"/home/vagrant/sync","hostpath":"/Users/alain/Documents/GIT/vagrant/CentOS7/Icinga","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
