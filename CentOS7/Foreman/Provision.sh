@@ -5,15 +5,15 @@ yum -y update
 # The Foreman
 cat > /etc/yum.repos.d/foreman.repo << EOF
 [foreman]
-name=Foreman 1.11
-baseurl=http://yum.theforeman.org/releases/1.11/el7/x86_64
+name=Foreman
+baseurl=http://yum.theforeman.org/releases/latest/el7/x86_64
 enabled=1
 gpgcheck=0
 EOF
 cat > /etc/yum.repos.d/foreman-plugins.repo << EOF
 [foreman-plugins]
-name=Foreman plugins 1.11
-baseurl=http://yum.theforeman.org/plugins/1.11/el7/x86_64
+name=Foreman plugins
+baseurl=http://yum.theforeman.org/plugins/latest/el7/x86_64
 enabled=1
 gpgcheck=0
 EOF
