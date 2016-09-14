@@ -41,7 +41,7 @@ sudo -u postgres createdb -O icingaweb2 -E UTF8 icingaweb2
 #sudo -u postgres createlang plpgsql icingaweb2
 sudo -u postgres psql -U icingaweb2 -d icingaweb2 < /usr/share/doc/icingaweb2/schema/pgsql.schema.sql
 
-service postgresql restart
+systemctl restart postgresql
 
 export PASWD=`openssl passwd -1 "admin"`
 sudo -u postgres psql icingaweb2 -c "INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('admin', 1, '$PASWD')";
