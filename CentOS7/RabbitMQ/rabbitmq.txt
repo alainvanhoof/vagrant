@@ -1,0 +1,34 @@
+# Install EPEL
+yum -y install epel-release
+
+# Install RabbitMQ server
+yum -y install erlang rabbitmq-server
+
+# Make RabbitMQ listen on IPv4 all interfaces:
+
+cat > /etc/rabbitmq/rabbitmq.config << EOF
+[
+  {rabbit, [
+     {tcp_listeners, [{"0.0.0.0",5672}]}
+  ]}
+].
+EOF
+
+# Enable and start Service
+systemctl enable rabbitmq-server
+systemctl start rabbitmq-server
+
+# Create a Firewalld service
+cat > /etc/firewalld/services/rabbitmq.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>RabbitMQ</short>
+  <description>RabbitMQ is a complete and highly reliable enterprise messaging system based on the emerging AMQP standard.</description>
+  <port protocol="tcp" port="5672"/>
+</service>
+EOF
+firewall-cmd --reload
+
+# Firewall
+firewall-cmd --permanent --zone=public --add-service=rabbitmq
+firewall-cmd --zone=public --add-service=rabbitmq
