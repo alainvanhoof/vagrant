@@ -1,0 +1,22 @@
+disk01 = './Disk01.vdi'
+disk02 = './Disk02.vdi'
+
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 2048
+    vm.name = "zfs01"
+    vm.customize ['createhd', '--filename', disk01, '--variant', 'Fixed', '--size', 1 * 1024]
+    vm.customize ['createhd', '--filename', disk02, '--variant', 'Fixed', '--size', 1 * 1024]
+    vm.customize ['storagectl', :id, "--name", "SATAController", "--add", "sata"]
+    vm.customize ['storageattach', :id,  '--storagectl', 'SATAController', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk01]
+    vm.customize ['storageattach', :id,  '--storagectl', 'SATAController', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', disk02]
+  end
+  
+  
+  config.vm.box = "centos/7"
+  config.vm.hostname = "zfs01"
+  config.vm.network "private_network", ip: "10.0.0.135", netmask: "255.255.255.0", virtualbox_intnet: "zfs_network"
+  config.vm.provision "shell", path: "Provision.sh"
+
+end
