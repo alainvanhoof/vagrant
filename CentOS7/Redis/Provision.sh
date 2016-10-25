@@ -6,9 +6,8 @@ yum -y install epel-release
 #setenforce 0
 #sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/"  /etc/sysconfig/selinux
 
-cat >> /etc/yum.repos.d/redis.repo << EOF
-
-EOF
+#cat >> /etc/yum.repos.d/redis.repo << EOF
+#EOF
 
 yum -y install redis
 
