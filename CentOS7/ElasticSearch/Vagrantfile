@@ -1,13 +1,34 @@
 Vagrant.configure(2) do |config|
 
   config.vm.provider 'virtualbox' do |vm|
-    vm.memory = 2048
+    vm.memory = 1024
+    vm.linked_clone = true
   end
 
-  config.vm.box = "centos/7"
-  config.vm.hostname = "elasticsearch01"
-  config.vm.network "private_network", ip: "10.0.0.120", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
-  config.vm.network "forwarded_port", guest: 9200, host: 9200
-  config.vm.provision "shell", path: "Provision.sh"
+  config.vm.define "ElasticBackup" do |eb|
+   eb.vm.box = "centos/7"
+   eb.vm.hostname = "elasticbackup"
+   eb.vm.network "private_network", ip: "10.0.0.123", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   eb.vm.provision "shell", path: "ProvisionEB.sh"
+  end
 
+  config.vm.define "ElasticNode01" do |n1|
+   n1.vm.box = "centos/7"
+   n1.vm.hostname = "elasticsearch01"
+   n1.vm.network "private_network", ip: "10.0.0.120", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   n1.vm.network "forwarded_port", guest: 9200, guest_ip: "10.0.0.120", host: 9200
+   n1.vm.provision "shell", path: "Provision01.sh"
+  end
+  config.vm.define "ElasticNode02" do |n2|
+   n2.vm.box = "centos/7"
+   n2.vm.hostname = "elasticsearch02"
+   n2.vm.network "private_network", ip: "10.0.0.121", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   n2.vm.provision "shell", path: "Provision02.sh"
+  end
+  config.vm.define "ElasticNode03" do |n3|
+   n3.vm.box = "centos/7"
+   n3.vm.hostname = "elasticsearch03"
+   n3.vm.network "private_network", ip: "10.0.0.122", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   n3.vm.provision "shell", path: "Provision03.sh"
+  end
 end
