@@ -1,0 +1,14 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 1024
+    vm.name = "ntpsec01"
+  end
+
+  config.vm.box = "centos/7"
+  config.vm.hostname = "ntpsec01"
+  config.vm.network "private_network", ip: "10.0.0.5", netmask: "255.255.255.0", virtualbox_intnet: "ntpsec_network"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.provision "shell", path: "Provision.sh"
+
+end
