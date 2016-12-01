@@ -31,4 +31,31 @@ Vagrant.configure(2) do |config|
    n3.vm.network "private_network", ip: "10.0.0.122", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
    n3.vm.provision "shell", path: "Provision03.sh"
   end
+
+  config.vm.define "Kibana" do |kb|
+   kb.vm.box = "centos/7"
+   kb.vm.hostname = "kibana"
+   kb.vm.network "private_network", ip: "10.0.0.124", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   kb.vm.network "forwarded_port", guest: 5601, host: 5601
+   kb.vm.provision "shell", path: "ProvisionKB.sh"
+  end
+
+  config.vm.define "Grafana" do |gf|
+   gf.vm.box = "centos/7"
+   gf.vm.hostname = "grafana"
+   gf.vm.network "private_network", ip: "10.0.0.125", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   gf.vm.network "forwarded_port", guest: 3000, host: 3000
+   gf.vm.provision "shell", path: "ProvisionGF.sh"
+  end
+
+  config.vm.define "Graphite" do |gr|
+   gr.vm.box = "centos/7"
+   gr.vm.hostname = "graphite"
+   gr.vm.network "private_network", ip: "10.0.0.126", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   gr.vm.network "forwarded_port", guest: 80, host: 8080
+   gr.vm.provision "shell", path: "ProvisionGR.sh"
+  end
+
+
 end
+

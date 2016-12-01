@@ -16,23 +16,10 @@ autorefresh=1
 type=rpm-md
 EOF
 
-yum -y install packetbeat metricbeat filebeat elasticsearch java-1.8.0-openjdk-headless collectd
+yum -y install kibana packetbeat metricbeat filebeat collectd
 
-cat >> /etc/elasticsearch/elasticsearch.yml << EOF
-node.name: "es01"
-cluster.name: "esc01"
-network.host: _eth1:ipv4_
-path.repo: ["/backup"]
-EOF
-
-sed -i -e 's/-Xms2g/-Xms768m/' /etc/elasticsearch/jvm.options
-sed -i -e 's/-Xmx2g/-Xmx768m/' /etc/elasticsearch/jvm.options
-
-mkdir /backup
-chmod 777 /backup
-mount -t nfs 10.0.0.123:/export/backup /backup
-
-sysctl --system
+sed -i -e 's/^#elasticsearch.url.*/elasticsearch.url: "http:\/\/10.0.0.120:9200"/' /etc/kibana/kibana.yml
+sed -i -e 's/^#server.host.*/server.host: "10.0.2.15"/' /etc/kibana/kibana.yml
 
 sed -i -e 's/localhost:9200/10.0.0.120:9200/' /etc/*beat/*beat.yml
 
@@ -54,12 +41,12 @@ EOF
 
 setsebool -P collectd_tcp_network_connect 1
 
-systemctl enable elasticsearch
+systemctl enable kibana
 systemctl enable packetbeat
 systemctl enable metricbeat
 systemctl enable filebeat
 systemctl enable collectd
-systemctl start elasticsearch
+systemctl start kibana
 systemctl start packetbeat
 systemctl start metricbeat
 systemctl start filebeat
