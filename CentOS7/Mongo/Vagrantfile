@@ -2,11 +2,29 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider 'virtualbox' do |vm|
     vm.memory = 1024
+    vm.linked_clone = true
   end
 
-  config.vm.box = "centos/7"
-  config.vm.hostname = "mongo01"
-  config.vm.network "private_network", ip: "10.0.0.140", netmask: "255.255.255.0", virtualbox_intnet: "mongo_network"
-  config.vm.provision "shell", path: "Provision.sh"
+  config.vm.define "MongoDB01" do |m1|
+    m1.vm.box = "centos/7"
+    m1.vm.hostname = "mongodb01"
+    m1.vm.network "private_network", ip: "10.0.0.140", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m1.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.140", host: 27017
+    m1.vm.provision "shell", path: "Provision01.sh"
+  end
+
+  config.vm.define "MongoDB02" do |m2|
+    m2.vm.box = "centos/7"
+    m2.vm.hostname = "mongodb02"
+    m2.vm.network "private_network", ip: "10.0.0.141", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m2.vm.provision "shell", path: "Provision02.sh"
+  end
+
+  config.vm.define "MongoDB03" do |m3|
+    m3.vm.box = "centos/7"
+    m3.vm.hostname = "mongodb03"
+    m3.vm.network "private_network", ip: "10.0.0.142", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m3.vm.provision "shell", path: "Provision03.sh"
+  end
 
 end
