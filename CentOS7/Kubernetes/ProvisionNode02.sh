@@ -20,8 +20,12 @@ yum -y install docker kubectl git
 systemctl enable docker 
 systemctl start docker
 
-
-
+git clone https://github.com/kubernetes/kube-deploy
+cd kube-deploy/docker-multinode
+export IP_ADDRESS=10.0.0.73
+export MASTER_IP=10.0.0.71
+export USE_CNI=true
+./worker.sh
 
 #yum install -y docker kubelet kubeadm kubectl kubernetes-cni
 #systemctl enable kubelet

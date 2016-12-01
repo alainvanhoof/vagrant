@@ -5,19 +5,26 @@ Vagrant.configure(2) do |config|
     vm.linked_clone = true
   end
 
- config.vm.define "kubernetes01" do |k1|
-  k1.vm.box = "centos/7"
-  k1.vm.hostname = "kubernetes01"
-  k1.vm.network "private_network", ip: "10.0.0.71", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
-  k1.vm.network "forwarded_port", guest: 8080, host: 8080
-  k1.vm.provision "shell", path: "Provision.sh"
+ config.vm.define "kubemaster" do |m1|
+  m1.vm.box = "centos/7"
+  m1.vm.hostname = "kubermaster"
+  m1.vm.network "private_network", ip: "10.0.0.71", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
+  m1.vm.network "forwarded_port", guest: 8080, host: 8080
+  m1.vm.provision "shell", path: "ProvisionMaster.sh"
  end
 
- config.vm.define "kubernetes02" do |k2|
-  k2.vm.box = "centos/7"
-  k2.vm.hostname = "kubernetes02"
-  k2.vm.network "private_network", ip: "10.0.0.72", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
-  k2.vm.provision "shell", path: "Provision.sh"
+ config.vm.define "kubenode01" do |n1|
+  n1.vm.box = "centos/7"
+  n1.vm.hostname = "kubenode01"
+  n1.vm.network "private_network", ip: "10.0.0.72", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
+  n1.vm.provision "shell", path: "ProvisionNode01.sh"
+ end
+
+ config.vm.define "kubenode02" do |n2|
+  n2.vm.box = "centos/7"
+  n2.vm.hostname = "kubenode02"
+  n2.vm.network "private_network", ip: "10.0.0.73", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
+  n2.vm.provision "shell", path: "ProvisionNode02.sh"
  end
 
 end
