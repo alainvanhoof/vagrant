@@ -1,0 +1,37 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 1024
+    vm.linked_clone = true
+  end
+
+  config.vm.define "Cassandra01" do |c1|
+   c1.vm.box = "centos/7"
+   c1.vm.hostname = "cassandra01"
+   c1.vm.network "private_network", ip: "10.0.0.130", netmask: "255.255.255.0", virtualbox_intnet: "cassandra_network"
+   c1.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Cassandra02" do |c2|
+   c2.vm.box = "centos/7"
+   c2.vm.hostname = "cassandra02"
+   c2.vm.network "private_network", ip: "10.0.0.131", netmask: "255.255.255.0", virtualbox_intnet: "cassandra_network"
+   c2.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Cassandra03" do |c3|
+   c3.vm.box = "centos/7"
+   c3.vm.hostname = "cassandra03"
+   c3.vm.network "private_network", ip: "10.0.0.132", netmask: "255.255.255.0", virtualbox_intnet: "cassandra_network"
+   c3.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Cassandra04" do |c4|
+   c4.vm.box = "centos/7"
+   c4.vm.hostname = "cassandra04"
+   c4.vm.network "private_network", ip: "10.0.0.133", netmask: "255.255.255.0", virtualbox_intnet: "cassandra_network"
+   c4.vm.provision "shell", path: "Provision.sh"
+  end
+
+end
+
