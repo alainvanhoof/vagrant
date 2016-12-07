@@ -16,18 +16,26 @@ EOF
 
 yum -y install mongodb-org
 
-sed -i -e "s/  bindIp: 127.0.0.1/  bindIp: 10.0.0.140/" /etc/mongod.conf
+export IP=$(cat /etc/sysconfig/network-scripts/ifcfg-eth1 | grep IPADDR | sed -e "s/IPADDR=//")
+
+sed -i -e "s/  bindIp: 127.0.0.1/  bindIp: ${IP}/" /etc/mongod.conf
 
 cat >> /etc/mongod.conf << EOF
 sharding:
   clusterRole: configsvr
 replication:
-  replSetName: MongoClusterA
+  replSetName: MongoConfig
 EOF
 
 cat > /root/init_mongo_repl.js << EOF
 rs.initiate();
 EOF
+
+if [ $IP != "10.0.0.140" ]; then 
+cat > /root/init_mongo_repl.js << EOF
+rs.add("${IP}");
+EOF
+fi
 
 systemctl enable mongod
 systemctl start mongod

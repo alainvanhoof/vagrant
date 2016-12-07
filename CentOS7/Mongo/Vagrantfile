@@ -10,21 +10,71 @@ Vagrant.configure(2) do |config|
     m1.vm.hostname = "mongodb01"
     m1.vm.network "private_network", ip: "10.0.0.140", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
     m1.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.140", host: 27017
-    m1.vm.provision "shell", path: "Provision01.sh"
+    m1.vm.provision "shell", path: "ProvisionConfig.sh"
   end
 
   config.vm.define "MongoDB02" do |m2|
     m2.vm.box = "centos/7"
     m2.vm.hostname = "mongodb02"
     m2.vm.network "private_network", ip: "10.0.0.141", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
-    m2.vm.provision "shell", path: "Provision02.sh"
+    m2.vm.provision "shell", path: "ProvisionConfig.sh"
   end
 
   config.vm.define "MongoDB03" do |m3|
     m3.vm.box = "centos/7"
     m3.vm.hostname = "mongodb03"
     m3.vm.network "private_network", ip: "10.0.0.142", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
-    m3.vm.provision "shell", path: "Provision03.sh"
+    m3.vm.provision "shell", path: "ProvisionConfig.sh"
+  end
+
+  config.vm.define "MongoDB04" do |m4|
+    m4.vm.box = "centos/7"
+    m4.vm.hostname = "mongodb04"
+    m4.vm.network "private_network", ip: "10.0.0.143", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m4.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.143", host: 27007
+    m4.vm.provision "shell", path: "ProvisionShardA.sh"
+  end
+
+  config.vm.define "MongoDB05" do |m5|
+    m5.vm.box = "centos/7"
+    m5.vm.hostname = "mongodb05"
+    m5.vm.network "private_network", ip: "10.0.0.144", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m5.vm.provision "shell", path: "ProvisionShardA.sh"
+  end
+
+  config.vm.define "MongoDB06" do |m6|
+    m6.vm.box = "centos/7"
+    m6.vm.hostname = "mongodb06"
+    m6.vm.network "private_network", ip: "10.0.0.145", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m6.vm.provision "shell", path: "ProvisionShardA.sh"
+  end
+
+  config.vm.define "MongoDB00" do |m0|
+    m0.vm.box = "centos/7"
+    m0.vm.hostname = "mongodb00"
+    m0.vm.network "private_network", ip: "10.0.0.146", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m0.vm.provision "shell", path: "ProvisionSH.sh"
+  end
+
+  config.vm.define "MongoDB07" do |m7|
+    m7.vm.box = "centos/7"
+    m7.vm.hostname = "mongodb07"
+    m7.vm.network "private_network", ip: "10.0.0.147", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m7.vm.provision "shell", path: "ProvisionShardB.sh"
+  end
+
+  config.vm.define "MongoDB08" do |m8|
+    m8.vm.box = "centos/7"
+    m8.vm.hostname = "mongodb08"
+    m8.vm.network "private_network", ip: "10.0.0.148", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m8.vm.provision "shell", path: "ProvisionShardB.sh"
+  end
+
+  config.vm.define "MongoDB09" do |m9|
+    m9.vm.box = "centos/7"
+    m9.vm.hostname = "mongodb09"
+    m9.vm.network "private_network", ip: "10.0.0.149", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m9.vm.provision "shell", path: "ProvisionShardB.sh"
   end
 
 end
