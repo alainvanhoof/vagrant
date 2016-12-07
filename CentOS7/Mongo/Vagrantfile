@@ -9,7 +9,6 @@ Vagrant.configure(2) do |config|
     m1.vm.box = "centos/7"
     m1.vm.hostname = "mongodb01"
     m1.vm.network "private_network", ip: "10.0.0.140", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
-    m1.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.140", host: 27017
     m1.vm.provision "shell", path: "ProvisionConfig.sh"
   end
 
@@ -31,7 +30,6 @@ Vagrant.configure(2) do |config|
     m4.vm.box = "centos/7"
     m4.vm.hostname = "mongodb04"
     m4.vm.network "private_network", ip: "10.0.0.143", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
-    m4.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.143", host: 27007
     m4.vm.provision "shell", path: "ProvisionShardA.sh"
   end
 
@@ -53,6 +51,7 @@ Vagrant.configure(2) do |config|
     m0.vm.box = "centos/7"
     m0.vm.hostname = "mongodb00"
     m0.vm.network "private_network", ip: "10.0.0.146", netmask: "255.255.255.0", virtualbox_intnet: "mongodb_network"
+    m0.vm.network "forwarded_port", guest: 27017, guest_ip: "10.0.0.146", host: 27017
     m0.vm.provision "shell", path: "ProvisionSH.sh"
   end
 

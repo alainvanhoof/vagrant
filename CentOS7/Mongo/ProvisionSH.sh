@@ -18,14 +18,15 @@ yum -y install mongodb-org
 
 export IP=$(cat /etc/sysconfig/network-scripts/ifcfg-eth1 | grep IPADDR | sed -e "s/IPADDR=//")
 
-sed -i -e "s/  bindIp: 127.0.0.1/  bindIp: ${IP}/" /etc/mongos.conf
-
-cat >> /etc/mongos.conf << EOF
+cat > /etc/mongos.conf << EOF
+net:
+  port: 27017
+  bindIp: ${IP}  # Listen to local interface only, comment to listen on all interfaces.
 sharding:
-  configDB: MongoClusterA/10.0.0.140:27017,10.0.0.141:27017,10.0.0.142:27017
+  configDB: MongoConfig/10.0.0.140:27017,10.0.0.141:27017,10.0.0.142:27017
 EOF
 
-cat > usr/lib/systemd/system/mongos.service << EOF
+cat > /usr/lib/systemd/system/mongos.service << EOF
 [Unit]
 Description=High-performance, schema-free document-oriented database
 After=network.target
@@ -35,7 +36,7 @@ Documentation=https://docs.mongodb.org/manual
 User=mongod
 Group=mongod
 Environment="OPTIONS=--quiet --config /etc/mongos.conf"
-ExecStart=/bin/mongos $OPTIONS 
+ExecStart=/bin/mongos \$OPTIONS 
 PIDFile=/var/run/mongodb/mongos.pid
 # file size
 LimitFSIZE=infinity
@@ -56,3 +57,7 @@ TasksAccounting=false
 [Install]
 WantedBy=multi-user.target
 EOF
+
+systemctl daemon-reload
+systemctl enable mongos
+systemctl start mongos
