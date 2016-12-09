@@ -26,6 +26,3 @@ export IP_ADDRESS="10.0.0.71"
 export USE_CNI="true"
 ./master.sh
 
-#yum install -y docker kubelet kubeadm kubectl kubernetes-cni
-#systemctl enable kubelet
-#systemctl start kubelet

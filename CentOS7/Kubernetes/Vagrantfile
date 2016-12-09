@@ -5,6 +5,13 @@ Vagrant.configure(2) do |config|
     vm.linked_clone = true
   end
 
+ config.vm.define "storagenode" do |s1|
+  s1.vm.box = "centos/7"
+  s1.vm.hostname = "storagenode"
+  s1.vm.network "private_network", ip: "10.0.0.70", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
+  s1.vm.provision "shell", path: "ProvisionStorage.sh"
+ end
+
  config.vm.define "kubemaster" do |m1|
   m1.vm.box = "centos/7"
   m1.vm.hostname = "kubermaster"
@@ -17,14 +24,14 @@ Vagrant.configure(2) do |config|
   n1.vm.box = "centos/7"
   n1.vm.hostname = "kubenode01"
   n1.vm.network "private_network", ip: "10.0.0.72", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
-  n1.vm.provision "shell", path: "ProvisionNode01.sh"
+  n1.vm.provision "shell", path: "ProvisionNode.sh"
  end
 
  config.vm.define "kubenode02" do |n2|
   n2.vm.box = "centos/7"
   n2.vm.hostname = "kubenode02"
   n2.vm.network "private_network", ip: "10.0.0.73", netmask: "255.255.255.0", virtualbox_intnet: "kube_network"
-  n2.vm.provision "shell", path: "ProvisionNode02.sh"
+  n2.vm.provision "shell", path: "ProvisionNode.sh"
  end
 
 end
