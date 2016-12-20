@@ -15,7 +15,8 @@
 #systemctl enable NAME
 #systemctl start NAME
 
-yum -y groupinstall 'Development Tools' libevent-devel libcap-devel git
+yum -y groupinstall 'Development Tools' 
+yum -y install libevent-devel libcap-devel git python-devel
 
 cd /root
 git clone https://github.com/ntpsec/ntpsec
