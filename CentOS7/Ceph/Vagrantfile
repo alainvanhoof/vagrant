@@ -1,0 +1,36 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 1024
+    vm.linked_clone = true
+  end
+
+  config.vm.define "Ceph01" do |c1|
+   c1.vm.box = "centos/7"
+   c1.vm.hostname = "ceph01"
+   c1.vm.network "private_network", ip: "10.0.0.171", netmask: "255.255.255.0", virtualbox_intnet: "ceph_network"
+   c1.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Ceph02" do |c2|
+   c2.vm.box = "centos/7"
+   c2.vm.hostname = "ceph02"
+   c2.vm.network "private_network", ip: "10.0.0.172", netmask: "255.255.255.0", virtualbox_intnet: "ceph_network"
+   c2.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Ceph03" do |c3|
+   c3.vm.box = "centos/7"
+   c3.vm.hostname = "ceph03"
+   c3.vm.network "private_network", ip: "10.0.0.173", netmask: "255.255.255.0", virtualbox_intnet: "ceph_network"
+   c3.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "CephAdmin" do |a1|
+   a1.vm.box = "centos/7"
+   a1.vm.hostname = "cephadmin"
+   a1.vm.network "private_network", ip: "10.0.0.170", netmask: "255.255.255.0", virtualbox_intnet: "ceph_network"
+   a1.vm.provision "shell", path: "ProvisionAdmin.sh"
+  end
+
+end
