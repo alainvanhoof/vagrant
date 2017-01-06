@@ -56,6 +56,13 @@ Vagrant.configure(2) do |config|
    gr.vm.provision "shell", path: "ProvisionGR.sh"
   end
 
+  config.vm.define "Logstash" do |ls|
+   ls.vm.box = "centos/7"
+   ls.vm.hostname = "logstash"
+   ls.vm.network "private_network", ip: "10.0.0.127", netmask: "255.255.255.0", virtualbox_intnet: "elasticsearch_network"
+   ls.vm.provision "shell", path: "ProvisionLS.sh"
+  end
+
 
 end
 
