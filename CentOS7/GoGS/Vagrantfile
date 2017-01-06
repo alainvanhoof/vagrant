@@ -1,0 +1,23 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 1024
+    vm.linked_clone = true
+  end
+
+  config.vm.define "GoGS01" do |g1|
+    g1.vm.box = "centos/7"
+    g1.vm.hostname = "gogs01"
+    g1.vm.network "private_network", ip: "10.0.0.110", netmask: "255.255.255.0", virtualbox_intnet: "gogs_network"
+    g1.vm.network "forwarded_port", guest: 3000, host: 3000
+    g1.vm.provision "shell", path: "ProvisionServer.sh"
+  end
+
+  config.vm.define "GoGS02" do |g2|
+    g2.vm.box = "centos/7"
+    g2.vm.hostname = "gogs02"
+    g2.vm.network "private_network", ip: "10.0.0.111", netmask: "255.255.255.0", virtualbox_intnet: "gogs_network"
+    g2.vm.provision "shell", path: "Provision.sh"
+  end
+
+end
