@@ -1,0 +1,22 @@
+---
+# tasks file for postgresql
+- name: Install PostgreSQL {{ $postgresql_version }}
+  apt:
+    name: postgresql-{{ $postgresql_version }}
+    state: present
+- name: Install libpg-dev
+  apt:
+    name: libpq-dev
+    state: present
+- name: Install Python PostgreSQL module
+  apt:
+    name: python-psycopg2
+    state: present
+
+- name: Create PostgreSQL Database {{ $postgresql_db_name }} with encoding {{ $postgesql_db_encoding }}
+  become_user: postgres
+  postgresql_db:
+    name: "{{ $postgresql_db_name }}"
+    encoding: "{{ $postgesql_db_encoding }}"
+
+...

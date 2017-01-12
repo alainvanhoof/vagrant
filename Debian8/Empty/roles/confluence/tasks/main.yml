@@ -1,0 +1,14 @@
+---
+# tasks file for confluence
+  - name: download Confluence 6.0.3
+    get_url:
+      url: https://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-6.0.3-x64.bin
+      dest: /root/atlassian-confluence-6.0.3-x64.bin
+      mode: 0700
+  - name: copy response file
+    copy:
+      src: response.varfile
+      dest: /root/response.varfile
+  - name: install Confluence
+    command: /root/atlassian-confluence-6.0.3-x64.bin -q -varfile /root/response.varfile creates=/opt/atlassian/confluence
+

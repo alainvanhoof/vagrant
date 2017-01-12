@@ -1,0 +1,8 @@
+app.confHome=/var/atlassian/application-data/confluence
+executeLauncherAction$Boolean=true
+app.install.service$Boolean=true
+sys.confirmedUpdateInstallationString=false
+launch.application$Boolean=true
+existingInstallationDir=/opt/atlassian/confluence
+sys.languageId=en
+sys.installationDir=/opt/atlassian/confluence
