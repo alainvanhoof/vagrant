@@ -1,0 +1,16 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 4096
+    vm.linked_clone = true
+  end
+
+  config.vm.define "jenkins01" do |j1|
+    j1.vm.box = "debian/jessie64"
+    j1.vm.hostname = "jenkins01"
+    j1.vm.network "private_network", ip: "10.0.0.100", netmask: "255.255.255.0", virtualbox_intnet: "jenkins_network"
+    j1.vm.network "forwarded_port", guest: 8080, host: 8080
+    j1.vm.provision "ansible", playbook: "Provision.yml"
+  end
+
+end
