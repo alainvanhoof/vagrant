@@ -77,7 +77,7 @@
   ],
   "post-processors": [
     {
-      "output": "Alpine.box",
+      "output": "alpine-virtual-x86_64-3.5.box",
       "type": "vagrant"
     }
   ]
