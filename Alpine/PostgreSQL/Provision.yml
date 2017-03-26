@@ -1,0 +1,5 @@
+---
+- hosts: postgresql
+  become: true
+  roles:
+    - { role: alpine_postgresql, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }

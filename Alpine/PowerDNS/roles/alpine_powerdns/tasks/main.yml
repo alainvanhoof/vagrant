@@ -1,0 +1,31 @@
+---
+# tasks file for alpine_powerdns
+
+- name: Install PowerDNS Recursor
+  apk:
+    name: pdns-recursor
+    state: present
+  when: recursor
+- name: Install PowerDNS Authoritive server
+  apk:
+    name: pdns
+    state: present
+  when: authoritive
+- name: Install PowerDNS PostgreSQL backend
+  apk:
+    name: pdns-backend-pgsql
+    state: present
+  when: authoritive and postgresql
+
+- name: Start PowerDNS recursor
+  service:
+    name: pdns-recursor
+    state: started
+  when: recursor
+- name: Start PowerDNS authoritive
+  service:
+    name: pdns
+    state: started
+  when: authoritive
+
+...

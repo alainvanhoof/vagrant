@@ -1,0 +1,29 @@
+---
+# tasks file for postgresql
+- name: Install PostgreSQL
+  apk:
+    name: postgresql
+    state: present
+- name: Install Python PostgreSQL module
+  apk:
+    name: py-psycopg2
+    state: present
+
+- name: Start PostgreSQL
+  service:
+    name: postgresql
+    state: started
+
+- name: Create PostgreSQL Database {{ pg_db_name }} with encoding {{ pg_db_encoding }}
+  postgresql_db:
+    name: "{{ pg_db_name }}"
+    encoding: "{{ pg_db_encoding }}"
+
+- name: Create PostgreSQL User {{ pg_db_user }} of {{ pg_db_name }}
+  postgresql_user:
+    db: "{{ pg_db_name }}"
+    name: "{{ pg_db_user }}"
+    password: "{{ pg_db_pass }}"
+    priv: "ALL"
+
+...

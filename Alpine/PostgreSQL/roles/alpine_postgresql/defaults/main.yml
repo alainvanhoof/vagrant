@@ -1,0 +1,4 @@
+---
+# defaults file for postgresql
+
+pg_db_encoding: "UTF8"

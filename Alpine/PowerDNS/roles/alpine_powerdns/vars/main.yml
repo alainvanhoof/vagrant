@@ -1,0 +1,8 @@
+---
+# vars file for alpine_powerdns
+
+recursor: false
+authoritive: false
+postgresql: false
+
+...

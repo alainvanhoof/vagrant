@@ -1,0 +1,7 @@
+---
+- hosts: powerdns
+  become: true
+  roles:
+    - { role: alpine_postgresql, pg_db_name: pdns, pg_db_user: pdns_user, pg_db_pass: pdns_pass }
+    - { role: alpine_powerdns, recursor: false, authoritive: true, postgresql: true }
+...
