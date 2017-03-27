@@ -5,6 +5,7 @@ sudo apk add haveged
 sudo apk add openssl
 sudo apk add bash
 sudo apk add python
+sudo apk add iproute2
 mkdir /home/vagrant/.ssh
 cd /home/vagrant/.ssh
 wget https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
