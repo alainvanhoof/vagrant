@@ -83,6 +83,7 @@
     },
     {
     "type": "atlas",
+    "only": ["virtualbox-iso"],
     "artifact": "alainvanhoof/alpine-virtual-x86_64-3.5",
     "artifact_type": "vagrant.box",
     "metadata": {
