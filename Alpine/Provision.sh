@@ -11,3 +11,4 @@ cd /home/vagrant/.ssh
 wget https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
 mv vagrant.pub authorized_keys 
 chmod -R go-rwsx /home/vagrant/.ssh
+sudo sed -i -e "s/^ttyS0/#ttyS0/" /etc/inittab

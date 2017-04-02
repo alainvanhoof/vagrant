@@ -1,12 +1,12 @@
 ---
 # tasks file for alpine_powerdns
 
-- name: Install PowerDNS Recursor
+- name: Install PowerDNS recursor
   apk:
     name: pdns-recursor
     state: present
   when: recursor
-- name: Install PowerDNS Authoritive server
+- name: Install PowerDNS authoritive
   apk:
     name: pdns
     state: present
@@ -16,16 +16,35 @@
     name: pdns-backend-pgsql
     state: present
   when: authoritive and postgresql
-
+- name: Configure PowerDNS authoritive
+  template:
+    src: pdns.postgresql.conf.j2
+    dest: /etc/pdns/pdns.conf
+  when: authoritive and postgresql
+- name: Configure PowerDNS recursor
+  template:
+    src: recursor.conf.j2
+    dest: /etc/pdns/recursor.conf
+  when: recursor
+- name: Copy PowerDNS Table setup
+  template:
+    src: powerdns.sql.j2
+    dest: /var/lib/postgresql/powerdns.sql
+  when: authoritive and postgresql
+- name: Create PowerDNS Tables 
+  shell: su postgres -c "psql {{ pg_db_name }} < /var/lib/postgresql/powerdns.sql"
+  when: authoritive and postgresql
 - name: Start PowerDNS recursor
   service:
     name: pdns-recursor
     state: started
+    enabled: true
   when: recursor
 - name: Start PowerDNS authoritive
   service:
     name: pdns
     state: started
+    enabled: true
   when: authoritive
 
 ...

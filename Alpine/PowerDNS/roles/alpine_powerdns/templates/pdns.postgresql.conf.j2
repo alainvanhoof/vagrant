@@ -1,0 +1,19 @@
+cache-ttl=60
+config-dir=/etc
+daemon=yes
+distributor-threads=1
+guardian=yes
+local-port=53
+loglevel=3
+module-dir=/usr/lib/pdns/pdns
+negquery-cache-ttl=60
+setgid=pdns
+setuid=pdns
+socket-dir=/var/run
+webserver=no
+
+launch=gpgsql
+gpgsql-host=127.0.0.1
+gpgsql-user={{ pg_db_user }}
+gpgsql-dbname={{ pg_db_name }}
+gpgsql-password={{ pg_db_pass }}
