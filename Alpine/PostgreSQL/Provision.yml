@@ -1,13 +1,9 @@
 ---
-- hosts: postgresql01
+- hosts: dev-postgresql-01
   become: true
   roles:
     - { role: alpine_postgresql, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
-- hosts: postgresql02
-  become: true
-  roles:
-    - { role: alpine_postgresql, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
-- hosts: postgresql03
+- hosts: dev-postgresql-02
   become: true
   roles:
     - { role: alpine_postgresql, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
