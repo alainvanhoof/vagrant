@@ -11,11 +11,6 @@
     name: py-psycopg2
     state: present
 
-- name: Start PostgreSQL
-  service:
-    name: postgresql
-    state: started
-
 - name: Create Replication User (primary)
   postgresql_user:
     name: repl 
@@ -102,7 +97,7 @@
   file:
     dest: /var/lib/postgresql/9.6/data/  
     state: absent
-  when: standby_active.stat is undefined
+  when: standby_active.stat.isfile is undefined
 
 - name: Create data dir
   file:
@@ -111,14 +106,14 @@
     mode: 0700
     owner: postgres
     group: postgres
-  when: standby_active.stat is undefined
+  when: standby_active.stat.isfile is undefined
 
 - name: Create recovery.conf
   copy:
     remote_src: true
     src: /usr/share/postgresql/recovery.conf.sample
     dest: /var/lib/postgresql/9.6/data/recovery.conf
-  when: standby_active.stat is undefined
+  when: standby_active.stat.isfile is undefined
 
 - name: Change standby_mode
   lineinfile:
@@ -140,5 +135,11 @@
     regexp: '.*trigger_file =.*'
     line: "trigger_file = '/tmp/postgresql.trigger.5432'"
   when: standby is defined
+
+- name: Start PostgreSQL
+  service:
+    name: postgresql
+    state: started
+    enabled: true
 
 ...
