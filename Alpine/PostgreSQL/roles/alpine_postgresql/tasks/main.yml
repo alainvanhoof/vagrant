@@ -1,9 +1,11 @@
 ---
 # tasks file for postgresql
+
 - name: Install PostgreSQL
   apk:
     name: postgresql
     state: present
+
 - name: Install Python PostgreSQL module
   apk:
     name: py-psycopg2
@@ -14,10 +16,18 @@
     name: postgresql
     state: started
 
+- name: Create Replication User (primary)
+  postgresql_user:
+    name: repl 
+    password: repl
+    role_attr_flags: REPLICATION
+  when: primary is defined
+
 - name: Create PostgreSQL Database {{ pg_db_name }} with encoding {{ pg_db_encoding }}
   postgresql_db:
     name: "{{ pg_db_name }}"
     encoding: "{{ pg_db_encoding }}"
+  when: standby is undefined
 
 - name: Create PostgreSQL User {{ pg_db_user }} of {{ pg_db_name }}
   postgresql_user:
@@ -25,5 +35,6 @@
     name: "{{ pg_db_user }}"
     password: "{{ pg_db_pass }}"
     priv: "ALL"
+  when: standby is undefined
 
 ...
