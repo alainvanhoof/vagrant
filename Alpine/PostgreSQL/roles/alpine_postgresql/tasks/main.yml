@@ -37,4 +37,108 @@
     priv: "ALL"
   when: standby is undefined
 
+- name: Create archive dir
+  file:
+    dest: /var/lib/postgresql/9.6/data/archive
+    state: directory
+    mode: 0755
+    owner: postgres
+    group: postgres
+  when: primary is defined
+
+- name: Allow Replication user to connect from standby
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/pg_hba.conf'
+    line: 'host     replication     repl         10.0.0.12/32        md5'
+  when: primary is defined
+
+- name: Change listen_addresses
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*listen_addresses =.*'
+    line: "listen_addresses = '*'"
+  when: primary is defined
+
+- name: Change wal_level to replica
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*wal_level =.*'
+    line: 'wal_level = replica'
+  when: primary is defined
+
+- name: Change archive_mode to on
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*archive_mode =.*'
+    line: 'archive_mode = on'
+  when: primary is defined
+
+- name: Change archive_command 
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*archive_command =.*'
+    line: "archive_command = 'test ! -f /var/lib/postgresql/9.6/data/archive/%f && cp %p /var/lib/postgresql/9.6/data/archive/%f'"
+  when: primary is defined
+
+- name: Change max_wal_senders
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*max_wal_senders =.*'
+    line: 'max_wal_senders = 3'
+  when: primary is defined
+
+- name: Change hot_standby
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/postgresql.conf'
+    regexp: '.*hot_standby =.*'
+    line: 'hot_standby = on'
+  when: primary is defined
+
+- stat: path=/var/lib/postgresql/9.6/data/recover.conf
+  register: standby_active
+  when: standby is defined
+
+- name: Prepare standby
+  file:
+    dest: /var/lib/postgresql/9.6/data/  
+    state: absent
+  when: standby_active.stat is undefined
+
+- name: Create data dir
+  file:
+    dest: /var/lib/postgresql/9.6/data
+    state: directory
+    mode: 0700
+    owner: postgres
+    group: postgres
+  when: standby_active.stat is undefined
+
+- name: Create recovery.conf
+  copy:
+    remote_src: true
+    src: /usr/share/postgresql/recovery.conf.sample
+    dest: /var/lib/postgresql/9.6/data/recovery.conf
+  when: standby_active.stat is undefined
+
+- name: Change standby_mode
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
+    regexp: '.*standby_mode =.*'
+    line: 'standby_mode = on'
+  when: standby is defined
+
+- name: Change primary_conninfo
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
+    regexp: '.*primary_conninfo =.*'
+    line: "primary_conninfo = 'host=10.0.0.11 port=5432 user=repl password=repl'"
+  when: standby is defined
+
+- name: Change trigger_file
+  lineinfile:
+    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
+    regexp: '.*trigger_file =.*'
+    line: "trigger_file = '/tmp/postgresql.trigger.5432'"
+  when: standby is defined
+
 ...
