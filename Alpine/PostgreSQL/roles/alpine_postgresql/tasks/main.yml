@@ -11,6 +11,13 @@
     name: py-psycopg2
     state: present
 
+- name: Start PostgreSQL
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+  when: standby is undefined
+
 - name: Create Replication User (primary)
   postgresql_user:
     name: repl 
@@ -88,6 +95,7 @@
     regexp: '.*hot_standby =.*'
     line: 'hot_standby = on'
   when: primary is defined
+  notify: Restart postgresql
 
 - stat: path=/var/lib/postgresql/9.6/data/recover.conf
   register: standby_active
@@ -97,7 +105,9 @@
   file:
     dest: /var/lib/postgresql/9.6/data/  
     state: absent
-  when: standby_active.stat.isfile is undefined
+  when: 
+    - standby_active.stat.isfile is undefined
+    - standby is defined
 
 - name: Create data dir
   file:
@@ -106,14 +116,23 @@
     mode: 0700
     owner: postgres
     group: postgres
-  when: standby_active.stat.isfile is undefined
+  when: 
+    - standby_active.stat.isfile is undefined
+    - standby is defined
+- name: Sync data directory from primary
+  command: su - postgres -c 'pg_basebackup -h 10.0.0.11 -D /var/lib/postgresql/9.6/data -U repl -v -P repl --xlog-method=stream'
+  when: 
+    - standby_active.stat.isfile is undefined
+    - standby is defined
 
 - name: Create recovery.conf
   copy:
     remote_src: true
     src: /usr/share/postgresql/recovery.conf.sample
     dest: /var/lib/postgresql/9.6/data/recovery.conf
-  when: standby_active.stat.isfile is undefined
+  when: 
+    - standby_active.stat.isfile is undefined
+    - standby is defined
 
 - name: Change standby_mode
   lineinfile:
@@ -141,5 +160,6 @@
     name: postgresql
     state: started
     enabled: true
+  when: standby is defined
 
 ...
