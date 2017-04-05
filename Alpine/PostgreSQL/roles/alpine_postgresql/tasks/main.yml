@@ -99,15 +99,14 @@
 
 - stat: path=/var/lib/postgresql/9.6/data/recover.conf
   register: standby_active
-  when: standby is defined
 
 - name: Prepare standby
   file:
     dest: /var/lib/postgresql/9.6/data/  
     state: absent
   when: 
-    - standby_active.stat.isfile is undefined
     - standby is defined
+    - standby_active.stat.isfile is undefined
 
 - name: Create data dir
   file:
@@ -119,41 +118,12 @@
   when: 
     - standby_active.stat.isfile is undefined
     - standby is defined
+
 - name: Sync data directory from primary
-  command: su - postgres -c 'pg_basebackup -h 10.0.0.11 -D /var/lib/postgresql/9.6/data -U repl -v -P repl --xlog-method=stream'
+  command: su - postgres -c 'PGPASSWORD=repl pg_basebackup -h 10.0.0.11 -D /var/lib/postgresql/9.6/data -U repl -w -v -P --xlog-method=stream -R'
   when: 
     - standby_active.stat.isfile is undefined
     - standby is defined
-
-- name: Create recovery.conf
-  copy:
-    remote_src: true
-    src: /usr/share/postgresql/recovery.conf.sample
-    dest: /var/lib/postgresql/9.6/data/recovery.conf
-  when: 
-    - standby_active.stat.isfile is undefined
-    - standby is defined
-
-- name: Change standby_mode
-  lineinfile:
-    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
-    regexp: '.*standby_mode =.*'
-    line: 'standby_mode = on'
-  when: standby is defined
-
-- name: Change primary_conninfo
-  lineinfile:
-    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
-    regexp: '.*primary_conninfo =.*'
-    line: "primary_conninfo = 'host=10.0.0.11 port=5432 user=repl password=repl'"
-  when: standby is defined
-
-- name: Change trigger_file
-  lineinfile:
-    dest: '/var/lib/postgresql/9.6/data/recovery.conf'
-    regexp: '.*trigger_file =.*'
-    line: "trigger_file = '/tmp/postgresql.trigger.5432'"
-  when: standby is defined
 
 - name: Start PostgreSQL
   service:
