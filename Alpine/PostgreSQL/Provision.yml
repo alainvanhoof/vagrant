@@ -7,4 +7,8 @@
   become: true
   roles:
     - { role: alpine_postgresql, standby: true }
+- hosts: dev-postgresql-03
+  become: true
+  roles:
+    - { role: alpine_postgresql, pg_db_name: test2, pg_db_user: test2user, pg_db_pass: test2pass }
 ...

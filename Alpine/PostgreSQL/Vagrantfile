@@ -1,5 +1,6 @@
 cluster = [ { :name => "dev-postgresql-01", :ip => "10.0.0.11" , :net => "dev.net"},
-            { :name => "dev-postgresql-02", :ip => "10.0.0.12" , :net => "dev.net"} ]
+            { :name => "dev-postgresql-02", :ip => "10.0.0.12" , :net => "dev.net"}, 
+            { :name => "dev-postgresql-03", :ip => "10.0.0.13" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
