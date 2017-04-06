@@ -1,31 +1,54 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role creates a running PostgreSQL instance or running PostgreSQL cluster (2 nodes) on Alpine Linux
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+To run the "agent-less" ansible against Alpine Linux it needs python, sudo and iproute2 install (use apk).
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+primary: undefined
+standby: undefined
+pg_version: "9.6"
+pg_db_name: "example"
+pg_db_user: "example"
+pg_db_pass: "example"
+pg_db_priv: "ALL"
+pg_db_encoding: "UTF8"
+pg_listen_addr: "'*'"
+pg_data_dir: "/var/lib/postgresql/{{ pg_version}}/data"
+pg_repl_user: "repl"
+pg_repl_pass: "repl"
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Create a cluster on dev-postgresql-01 and dev-postgresql-02 with a initial database test:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: dev-postgresql-01
+  become: true
+  roles:
+    - { role: alpine_postgresql, primary: true, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
+- hosts: dev-postgresql-02
+  become: true
+  roles:
+    - { role: alpine_postgresql, standby: true }
+
+Create a standalone postgreSQL on dev-postgresql-03:
+
+- hosts: dev-postgresql-03
+  become: true
+  roles:
+    - { role: alpine_postgresql, pg_db_name: test2, pg_db_user: test2user, pg_db_pass: test2pass }
+
+
 
 License
 -------
@@ -35,4 +58,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Alain van Hoof : alain+ansible@lafeberhof.nl
