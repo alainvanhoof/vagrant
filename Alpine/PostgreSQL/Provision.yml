@@ -1,14 +1,17 @@
 ---
+
 - hosts: dev-postgresql-01
   become: true
   roles:
-    - { role: alpine_postgresql, primary: true, pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
+    - { role: alpine_postgresql, pg_primary: true, pg_standby_addr: "10.0.0.12", pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
+
 - hosts: dev-postgresql-02
   become: true
   roles:
-    - { role: alpine_postgresql, standby: true }
+    - { role: alpine_postgresql, pg_standby: true, pg_primary_addr: "10.0.0.11" }
+
 - hosts: dev-postgresql-03
   become: true
   roles:
-    - { role: alpine_postgresql, pg_db_name: test2, pg_db_user: test2user, pg_db_pass: test2pass }
+    - { role: alpine_postgresql, pg_listen_addr: localhost, pg_db_name: test2, pg_db_user: test2user, pg_db_pass: test2pass }
 ...
