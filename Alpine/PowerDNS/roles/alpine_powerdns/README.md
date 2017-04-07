@@ -40,7 +40,7 @@ A host running the authorative server on interface eth1 using postgresql listeni
     pg_listen_addr: "'127.0.0.1'"
   roles:
     - { role: alpine_postgresql }
-    - { role: alpine_powerdns, pdns_authoritive: true, pdns_postgresql: true, pdns_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    - { role: alpine_powerdns, pdns_authoritive: true, pdns_postgresql: true, pdns_auth_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 
 A host running the recursor that uses 10.0.0.11 to resolve thee powerdns.net zone:
 
@@ -60,7 +60,7 @@ A host running both authorative (on 127.0.0.1) and recursor (on eth1) using posg
     pg_listen_addr: "'127.0.0.1'"
   roles:
     - { role: alpine_postgresql }
-    - { role: alpine_powerdns, pdns_recursor: true, pdns_authoritive: true, pdns_postgresql: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_listen_addr: 127.0.0.1, pdns_recursor_forward_zones: "powerdns.net=127.0.0.1" }
+    - { role: alpine_powerdns, pdns_recursor: true, pdns_authoritive: true, pdns_postgresql: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_auth_listen_addr: 127.0.0.1, pdns_recursor_forward_zones: "powerdns.net=127.0.0.1" }
 ...
 
 License
