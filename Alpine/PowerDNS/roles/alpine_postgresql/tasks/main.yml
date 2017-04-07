@@ -1,9 +1,11 @@
 ---
 # tasks file for postgresql
+
 - name: Install PostgreSQL
   apk:
     name: postgresql
     state: present
+
 - name: Install Python PostgreSQL module
   apk:
     name: py-psycopg2
@@ -13,17 +15,126 @@
   service:
     name: postgresql
     state: started
+    enabled: true
+  when: pg_standby is undefined
+
+- name: Create Replication User (primary)
+  postgresql_user:
+    name: "{{ pg_repl_user }}"
+    password: "{{ pg_repl_pass }}"
+    role_attr_flags: REPLICATION
+  when: pg_primary is defined
 
 - name: Create PostgreSQL Database {{ pg_db_name }} with encoding {{ pg_db_encoding }}
   postgresql_db:
     name: "{{ pg_db_name }}"
     encoding: "{{ pg_db_encoding }}"
+  when: pg_standby is undefined
 
 - name: Create PostgreSQL User {{ pg_db_user }} of {{ pg_db_name }}
   postgresql_user:
     db: "{{ pg_db_name }}"
     name: "{{ pg_db_user }}"
     password: "{{ pg_db_pass }}"
-    priv: "ALL"
+    priv: "{{ pg_db_priv }}"
+  when: pg_standby is undefined
+
+- name: Create archive dir
+  file:
+    dest: "{{ pg_data_dir }}/archive"
+    state: directory
+    mode: 0755
+    owner: postgres
+    group: postgres
+  when: pg_primary is defined
+
+- name: Allow Replication user to connect from standby
+  lineinfile:
+    dest: "{{ pg_data_dir }}/pg_hba.conf"
+    line: 'host     replication     {{ pg_repl_user }}         {{ pg_standby_addr }}/32        md5'
+  when: pg_primary is defined
+
+- name: Change wal_level to replica
+  lineinfile:
+    dest: '{{ pg_data_dir }}/postgresql.conf'
+    regexp: '.*wal_level =.*'
+    line: 'wal_level = replica'
+  when: pg_primary is defined
+  notify: Restart postgresql
+
+- name: Change archive_mode to on
+  lineinfile:
+    dest: '{{ pg_data_dir }}/postgresql.conf'
+    regexp: '.*archive_mode =.*'
+    line: 'archive_mode = on'
+  when: pg_primary is defined
+  notify: Restart postgresql
+
+- name: Change archive_command 
+  lineinfile:
+    dest: '{{ pg_data_dir }}/postgresql.conf'
+    regexp: '.*archive_command =.*'
+    line: "archive_command = 'test ! -f {{ pg_data_dir }}/archive/%f && cp %p {{ pg_data_dir }}/%f'"
+  when: pg_primary is defined
+  notify: Restart postgresql
+
+- name: Change max_wal_senders
+  lineinfile:
+    dest: '{{ pg_data_dir }}/postgresql.conf'
+    regexp: '.*max_wal_senders =.*'
+    line: 'max_wal_senders = 3'
+  when: pg_primary is defined
+  notify: Restart postgresql
+
+- name: Change hot_standby
+  lineinfile:
+    dest: '{{ pg_data_dir }}/postgresql.conf'
+    regexp: '.*hot_standby =.*'
+    line: 'hot_standby = on'
+  when: pg_primary is defined
+  notify: Restart postgresql
+
+- stat: path={{ pg_data_dir }}/recovery.conf
+  register: standby_active
+  when: pg_standby is defined
+
+- name: Prepare standby
+  file:
+    dest: '{{ pg_data_dir }}'
+    state: absent
+  when: 
+    - pg_standby is defined
+    - standby_active.stat.isreg is undefined
+
+- name: Create data dir
+  file:
+    dest: '{{ pg_data_dir }}'
+    state: directory
+    mode: 0700
+    owner: postgres
+    group: postgres
+  when: 
+    - pg_standby is defined
+    - standby_active.stat.isreg is undefined
+
+- name: Sync data directory from primary
+  command: su - postgres -c 'PGPASSWORD=repl pg_basebackup -h {{ pg_primary_addr }} -D {{ pg_data_dir }} -U repl -w -v -P --xlog-method=stream -R'
+  when: 
+    - pg_standby is defined
+    - standby_active.stat.isreg is undefined
+
+- name: Change listen_addresses
+  lineinfile:
+    dest: "{{ pg_data_dir }}/postgresql.conf"
+    regexp: '.*listen_addresses =.*'
+    line: "listen_addresses = {{ pg_listen_addr }}"
+  notify: Restart postgresql
+
+- name: Start PostgreSQL
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+  when: pg_standby is defined
 
 ...

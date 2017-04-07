@@ -1,23 +1,27 @@
 ---
-- hosts: powerdns01
+- hosts: dev-powerdns-01
   become: true
   vars:
     pg_db_name: pdns
     pg_db_user: pdnsuser
     pg_db_pass: pdnspass
+    pg_listen_addr: "'127.0.0.1'"
   roles:
     - { role: alpine_postgresql }
     - { role: alpine_powerdns, authoritive: true, postgresql: true }
-- hosts: powerdns02
+
+- hosts: dev-powerdns-02
   become: true
   roles:
     - { role: alpine_powerdns, recursor: true }
-- hosts: powerdns03
+
+- hosts: dev-powerdns-03
   become: true
   vars:
     pg_db_name: pdns
     pg_db_user: pdnsuser
     pg_db_pass: pdnspass
+    pg_listen_addr: "'127.0.0.1'"
   roles:
     - { role: alpine_postgresql }
     - { role: alpine_powerdns, recursor: true, authoritive: true, postgresql: true }
