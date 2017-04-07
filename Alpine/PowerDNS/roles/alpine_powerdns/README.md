@@ -1,31 +1,67 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Configure PowerDNS (authoritive and/or recursor)  on Apline Linux
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+A connection to a postgresql database for the authoritive server. Use alainvanhoof/alpine_postgresql for example
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* pg_db_name:                pdns
+* pg_db_user:                pdnsuser
+* pg_db_pass:                pdnspass
+* pg_listen_addr:            "'127.0.0.1'"
+* pdns_auth_listen_addr:     127.0.0.1
+* pdns_auth_listen_port:     53
+* pdns_recursor_listen_addr: 127.0.0.1
+* pdns_recursor_listen_port: 53
+* pdns_recursor_forward_zones : ".=8.8.8.8"
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+For the autoritive server : alainvanhoof/alpine_postgresql
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+A host running the authorative server on interface eth1 using postgresql listening on 127.0.0.1:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: dev-powerdns-01
+  become: true
+  vars:
+    pg_db_name: pdns
+    pg_db_user: pdnsuser
+    pg_db_pass: pdnspass
+    pg_listen_addr: "'127.0.0.1'"
+  roles:
+    - { role: alpine_postgresql }
+    - { role: alpine_powerdns, pdns_authoritive: true, pdns_postgresql: true, pdns_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+A host running the recursor that uses 10.0.0.11 to resolve thee powerdns.net zone:
+
+- hosts: dev-powerdns-02
+  become: true
+  roles:
+    - { role: alpine_powerdns, pdns_recursor: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_recursor_forward_zones: "powerdns.net=10.0.0.11" }
+
+A host running both authorative (on 127.0.0.1) and recursor (on eth1) using posgresql running on the same host:
+
+- hosts: dev-powerdns-03
+  become: true
+  vars:
+    pg_db_name: pdns
+    pg_db_user: pdnsuser
+    pg_db_pass: pdnspass
+    pg_listen_addr: "'127.0.0.1'"
+  roles:
+    - { role: alpine_postgresql }
+    - { role: alpine_powerdns, pdns_recursor: true, pdns_authoritive: true, pdns_postgresql: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_listen_addr: 127.0.0.1, pdns_recursor_forward_zones: "powerdns.net=127.0.0.1" }
+...
 
 License
 -------
@@ -35,4 +71,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Alain van Hoof : alain+ansible@lafeberhof.nl

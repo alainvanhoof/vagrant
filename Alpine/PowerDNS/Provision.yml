@@ -24,6 +24,7 @@
     pg_listen_addr: "'127.0.0.1'"
   roles:
     - { role: alpine_postgresql }
-    - { role: alpine_powerdns, pdns_recursor: true, pdns_authoritive: true, pdns_postgresql: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_listen_addr: 127.0.0.1, pdns_recursor_forward_zones: "powerdns.net=127.0.0.1" }
+    - { role: alpine_powerdns, pdns_recursor: true, pdns_recursor_listen_addr: "{{ ansible_eth1.ipv4.address }}", pdns_recursor_forward_zones: "powerdns.net=127.0.0.1" }
+    - { role: alpine_powerdns, pdns_authoritive: true, pdns_postgresql: true, pdns_listen_addr: 127.0.0.1 }
 
 ...
