@@ -39,7 +39,9 @@
      - pdns_postgresql is defined
 
 - name: Create PowerDNS Tables 
-  shell: su postgres -c "psql {{ pg_db_name }} < /var/lib/postgresql/powerdns.sql"
+  shell: su postgres -c "psql {{ pg_db_name }} < /var/lib/postgresql/powerdns.sql && touch /var/lib/postgresql/powerdns.sql.executed" 
+  args:
+    creates: /var/lib/postgresql/powerdns.sql.executed
   when: 
      - pdns_authoritive is defined
      - pdns_postgresql is defined
