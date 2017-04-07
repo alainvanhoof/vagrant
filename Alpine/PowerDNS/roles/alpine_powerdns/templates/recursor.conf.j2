@@ -1,5 +1,6 @@
 daemon=yes
-local-address=0.0.0.0
+local-address={{ pdns_recursor_listen_addr }}
+local-port={{ pdns_recursor_listen_port }}
 setgid=recursor
 setuid=recursor
-forward-zones=powerdns.net=10.0.0.11
+forward-zones={{ pdns_recursor_forward_zones }}

@@ -1,2 +1,13 @@
 ---
 # handlers file for alpine_powerdns
+
+- name: Reload pdns
+  service:
+    name: pdns
+    state: reloaded
+
+- name: Restart pdns-recursor
+  service:
+    name: pdns-recursor
+    state: restarted
+

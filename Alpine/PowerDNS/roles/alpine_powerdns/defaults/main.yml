@@ -5,7 +5,8 @@ pg_db_name:                pdns
 pg_db_user:                pdnsuser
 pg_db_pass:                pdnspass
 pg_listen_addr:            "'127.0.0.1'"
-pdns_listen_addr:          127.0.0.1
-pdns_listen_port:          5353
+pdns_auth_listen_addr:     127.0.0.1
+pdns_auth_listen_port:     53
 pdns_recursor_listen_addr: 127.0.0.1
 pdns_recursor_listen_port: 53
+pdns_recursor_forward_zones : ".=8.8.8.8"
