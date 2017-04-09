@@ -1,0 +1,18 @@
+---
+
+- hosts: dev-nginx-01
+  become: true
+  roles:
+    - { role: alpine_nginx }
+
+- hosts: dev-nginx-02
+  become: true
+  roles:
+    - { role: alpine_nginx, php5: true }
+
+- hosts: dev-nginx-03
+  become: true
+  roles:
+    - { role: alpine_nginx, php7: true }
+
+...
