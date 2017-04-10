@@ -1,0 +1,21 @@
+cluster = [ { :name => "dev-mariadb-01", :ip => "10.0.0.11" , :net => "mariadb.net"},
+            { :name => "dev-mariadb-02", :ip => "10.0.0.12" , :net => "mariadb.net"},
+            { :name => "dev-mariadb-03", :ip => "10.0.0.13" , :net => "mariadb.net"} ]
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 1024
+    vb.cpus = 1
+    vb.linked_clone = true
+ end
+
+ config.vm.box = "Alpine"
+ config.vm.synced_folder '.', '/vagrant', disabled: true
+ cluster.each do |node|
+    config.vm.define node[:name] do |config|
+      config.vm.hostname = node[:name]
+      config.vm.network "private_network", ip: node[:ip], netmask: "255.255.255.0", virtualbox_intnet: node[:net]
+      config.vm.provision "ansible", playbook: "Provision.yml"
+    end
+ end
+end

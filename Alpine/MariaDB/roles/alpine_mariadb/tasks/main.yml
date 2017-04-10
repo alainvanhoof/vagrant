@@ -1,0 +1,37 @@
+---
+# tasks file for alpine_mariadb
+
+- name: Install MariaDB
+  apk:
+    name: mariadb
+    state: present
+    update_cache: yes
+
+- name: Install MariaDB Python module
+  apk:
+    name: py-mysqldb
+    state: present
+    update_cache: yes
+
+- name: Init MariaDB
+  shell: "/etc/init.d/mariadb setup"
+  args:
+    creates: /var/lib/mysql/mysql/
+
+- name: Start MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Create MariaDB database {{ mysql_db_name }}
+  mysql_db:
+    name: "{{ mysql_db_name }}"
+    state: present
+
+- name: Create MariaDB User {{ mysql_db_user }} of {{ mysql_db_name }}
+  mysql_user:
+    name: "{{ mysql_db_user }}"
+    password: "{{ mysql_db_pass }}"
+    priv: '{{ mysql_db_name }}.*:ALL'
+    state: present

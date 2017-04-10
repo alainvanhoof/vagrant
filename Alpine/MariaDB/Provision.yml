@@ -1,0 +1,18 @@
+---
+
+- hosts: dev-mariadb-01
+  become: true
+  roles:
+    - { role: alpine_mariadb, mysql_db_name: test, mysql_db_user: test, mysql_db_pass: test }
+
+- hosts: dev-mariadb-02
+  become: true
+  roles:
+    - { role: alpine_mariadb }
+
+- hosts: dev-mariadb-03
+  become: true
+  roles:
+    - { role: alpine_mariadb }
+
+...
