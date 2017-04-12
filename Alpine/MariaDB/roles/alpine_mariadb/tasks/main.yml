@@ -7,6 +7,12 @@
     state: present
     update_cache: yes
 
+- name: Install MariaDBA Client
+  apk:
+    name: mariadb-client
+    state: present
+    update_cache: yes
+
 - name: Install MariaDB Python module
   apk:
     name: py-mysqldb
@@ -51,14 +57,14 @@
     state: started
     enabled: true
 
-- name: Create MariaDB database {{ mysql_db_name }}
+- name: Create MariaDB database {{ mariadb_name }}
   mysql_db:
-    name: "{{ mysql_db_name }}"
+    name: "{{ mariadb_name }}"
     state: present
 
-- name: Create MariaDB User {{ mysql_db_user }} of {{ mysql_db_name }}
+- name: Create MariaDB User {{ mariadb_user }} of {{ mariadb_name }}
   mysql_user:
-    name: "{{ mysql_db_user }}"
-    password: "{{ mysql_db_pass }}"
-    priv: '{{ mysql_db_name }}.*:ALL'
+    name: "{{ mariadb_user }}"
+    password: "{{ mariadb_pass }}"
+    priv: '{{ mariadb_name }}.*:ALL'
     state: present
