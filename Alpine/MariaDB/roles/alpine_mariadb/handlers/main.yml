@@ -1,2 +1,12 @@
 ---
 # handlers file for alpine_mariadb
+
+- name: Reload mariadb
+  service:
+    name: mariadb
+    state: reloaded
+
+- name: Restart mariadb
+  service:
+    name: mariadb
+    state: restarted

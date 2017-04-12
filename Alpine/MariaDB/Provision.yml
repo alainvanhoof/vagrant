@@ -8,7 +8,7 @@
 - hosts: dev-mariadb-02
   become: true
   roles:
-    - { role: alpine_mariadb }
+    - { role: alpine_mariadb, mysql_db_name: test, mysql_db_user: test, mysql_db_pass: test, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 
 - hosts: dev-mariadb-03
   become: true
