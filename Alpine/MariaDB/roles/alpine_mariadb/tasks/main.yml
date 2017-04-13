@@ -61,6 +61,7 @@
   mysql_db:
     name: "{{ mariadb_name }}"
     state: present
+  when: mariadb_name is defined
 
 - name: Create MariaDB User {{ mariadb_user }} of {{ mariadb_name }}
   mysql_user:
@@ -68,3 +69,9 @@
     password: "{{ mariadb_pass }}"
     priv: '{{ mariadb_name }}.*:ALL'
     state: present
+  when:
+    - mariadb_pass is defined
+    - mariadb_user is defined
+    - mariadb_name is defined
+
+...
