@@ -1,2 +1,0 @@
-CREATE USER 'repl' IDENTIFIED BY 'repl_pass';
-GRANT REPLICATION SLAVE ON *.* TO repl;

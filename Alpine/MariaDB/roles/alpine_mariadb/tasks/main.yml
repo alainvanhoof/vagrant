@@ -46,7 +46,7 @@
   when: mariadb_listen_addr is defined
   notify: Restart mariadb
 
-- name: Set Slave ID
+- name: Set server-id to 2 on slave
   ini_file:
     dest: '/etc/mysql/my.cnf'
     section: mysqld
