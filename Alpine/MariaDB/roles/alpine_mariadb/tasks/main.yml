@@ -19,11 +19,6 @@
     state: present
     update_cache: yes
 
-- name: Init MariaDB
-  shell: "/etc/init.d/mariadb setup"
-  args:
-    creates: /var/lib/mysql/mysql/
-
 - name: Listen on socket only
   ini_file:
     dest: '/etc/mysql/my.cnf'
@@ -51,6 +46,41 @@
   when: mariadb_listen_addr is defined
   notify: Restart mariadb
 
+- name: Set Slave ID
+  ini_file:
+    dest: '/etc/mysql/my.cnf'
+    section: mysqld
+    option: server-id
+    value: 2
+  when: mariadb_slave is defined
+  notify: Restart mariadb
+
+- name: Set Database {{ mariadb_name }} to replicate
+  ini_file:
+    dest: '/etc/mysql/my.cnf'
+    section: mysqld
+    option: replicate-do-db
+    value: "{{ mariadb_name }}"
+  when: mariadb_slave is defined or mariadb_master is defined
+  notify: Restart mariadb
+
+- name: Copy master.sql
+  copy:
+    src: master.sql
+    dest: /root/init.sql
+  when: mariadb_master is defined
+
+- name: Copy slave.sql
+  copy:
+    src: slave.sql
+    dest: /root/init.sql
+  when: mariadb_slave is defined
+  
+- name: Init MariaDB
+  shell: "/etc/init.d/mariadb setup"
+  args:
+    creates: /var/lib/mysql/mysql/
+
 - name: Start MariaDB
   service:
     name: mariadb
@@ -73,5 +103,8 @@
     - mariadb_pass is defined
     - mariadb_user is defined
     - mariadb_name is defined
-
+    
+- name: Init master and slave
+  command: su -c "/usr/bin/mysql < /root/init.sql && touch /root/init.done" creates=/root/init.done
+  when: mariadb_master is defined or mariadb_slave is defined
 ...

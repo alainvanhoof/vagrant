@@ -8,11 +8,11 @@
 - hosts: dev-mariadb-02
   become: true
   roles:
-    - { role: alpine_mariadb, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    - { role: alpine_mariadb, mariadb_master: yes, mariadb_name: test, mariadb_user: test, mariadb_pass: test, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 
 - hosts: dev-mariadb-03
   become: true
   roles:
-    - { role: alpine_mariadb, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    - { role: alpine_mariadb, mariadb_slave: yes, mariadb_name: test, mariadb_user: test, mariadb_pass: test, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 
 ...
