@@ -1,31 +1,46 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role creates a running nginx instance with an option to install php5/php7 served by hph-fpm
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+To run the "agent-less" ansible against Alpine Linux it needs python, sudo and iproute2 installed (use apk).
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* php5: undefined
+* php7: undefined
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Install nginx with a index.html page on port 80
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: dev-nginx-01
+  become: true
+  roles:
+    - { role: alpine_nginx }
+
+Install nginx with php5, a index.html and index.php (with phpinfo) on port 80
+
+- hosts: dev-nginx-02
+  become: true
+  roles:
+    - { role: alpine_nginx, php5: yes }
+
+Install nginx with php7, a index.html and index.php (with phpinfo) on port 80
+
+- hosts: dev-nginx-03
+  become: true
+  roles:
+    - { role: alpine_nginx, php7: yes }
+
 
 License
 -------
@@ -35,4 +50,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Alain van Hoof : alain+ansible@lafeberhof.nl
