@@ -7,7 +7,7 @@
     state: present
     update_cache: yes
 
-- name: Install MariaDBA Client
+- name: Install MariaDB Client
   apk:
     name: mariadb-client
     state: present
@@ -71,8 +71,8 @@
   when: mariadb_master is defined
 
 - name: Copy slave.sql
-  copy:
-    src: slave.sql
+  template:
+    src: slave.sql.j2
     dest: /root/init.sql
   when: mariadb_slave is defined
   
@@ -87,11 +87,18 @@
     state: started
     enabled: true
 
+- name: Remove default test Database
+  mysql_db:
+    name: test
+    state: absent
+
 - name: Create MariaDB database {{ mariadb_name }}
   mysql_db:
     name: "{{ mariadb_name }}"
     state: present
-  when: mariadb_name is defined
+  when: 
+    - mariadb_name is defined
+    - mariadb_slave is undefined
 
 - name: Create MariaDB User {{ mariadb_user }} of {{ mariadb_name }}
   mysql_user:
@@ -105,6 +112,8 @@
     - mariadb_name is defined
     
 - name: Init master and slave
-  command: su -c "/usr/bin/mysql < /root/init.sql && touch /root/init.done" creates=/root/init.done
+  shell: "/usr/bin/mysql < /root/init.sql && touch /root/init.done"
+  args:
+    creates: /root/init.done
   when: mariadb_master is defined or mariadb_slave is defined
 ...

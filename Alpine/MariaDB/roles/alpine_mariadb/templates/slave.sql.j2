@@ -1,5 +1,5 @@
 CHANGE MASTER TO
-  MASTER_HOST='10.0.0.12',
+  MASTER_HOST='{{ mariadb_master_addr }}',
   MASTER_USER='repl',
   MASTER_PASSWORD='repl_pass',
   MASTER_CONNECT_RETRY=10;
