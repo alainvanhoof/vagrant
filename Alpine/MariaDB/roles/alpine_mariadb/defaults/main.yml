@@ -1,2 +1,5 @@
 ---
 # defaults file for alpine_mariadb
+
+mariadb_repl_user: "repl"
+mariadb_repl_pass: "repl"

@@ -1,0 +1,3 @@
+CREATE USER '{{ mariadb_repl_user }}@localhost' IDENTIFIED BY '{{ mariadb_repl_pass }}';
+GRANT REPLICATION SLAVE ON *.* TO {{ mariadb_repl_user }} IDENTIFIED BY '{{ mariadb_repl_pass }}' WITH GRANT OPTION;
+FLUSH PRIVILEGES;

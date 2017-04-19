@@ -65,8 +65,8 @@
   notify: Restart mariadb
 
 - name: Copy master.sql
-  copy:
-    src: master.sql
+  template:
+    src: master.sql.j2
     dest: /root/init.sql
   when: mariadb_master is defined
 
@@ -110,6 +110,7 @@
     - mariadb_pass is defined
     - mariadb_user is defined
     - mariadb_name is defined
+    - mariadb_slave is undefined
     
 - name: Init master and slave
   shell: "/usr/bin/mysql < /root/init.sql && touch /root/init.done"
