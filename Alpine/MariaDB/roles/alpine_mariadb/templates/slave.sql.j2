@@ -1,6 +1,6 @@
 CHANGE MASTER TO
   MASTER_HOST='{{ mariadb_master_addr }}',
-  MASTER_USER='repl',
-  MASTER_PASSWORD='repl_pass',
+  MASTER_USER='{{ mariadb_repl_user}}',
+  MASTER_PASSWORD='{{ mariadb_repl_pass }}',
   MASTER_CONNECT_RETRY=10;
 START SLAVE;
