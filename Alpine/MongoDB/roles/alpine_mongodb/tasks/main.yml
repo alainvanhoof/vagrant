@@ -1,0 +1,55 @@
+---
+# tasks file for alpine_mongodb
+
+- name: Enable testing repository
+  replace:
+    dest: /etc/apk/repositories
+    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/testing"
+    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/testing"
+
+- name: Install MongoDB package
+  apk:
+    name: mongodb
+    state: present
+    update_cache: yes
+
+- name: Configure MongoDB Listen IP
+  lineinfile:
+    dest: /etc/conf.d/mongodb
+    regexp: "MONGODB_IP=.*"
+    line: 'MONGODB_IP="{{ mongodb_listen_addr }}"'
+  when: mongodb_listen_addr is defined
+  notify: Restart mongodb
+
+- name: Configure MongoDB Port
+  lineinfile:
+    dest: /etc/conf.d/mongodb
+    regexp: "MONGODB_PORT=.*"
+    line: 'MONGODB_PORT="{{ mongodb_listen_port }}"'
+  when: mongodb_listen_port is defined
+  notify: Restart mongodb
+
+- name: Configure Primary Replica
+  lineinfile:
+    dest: /etc/conf.d/mongodb
+    regexp: "MONGODB_OPTIONS=.*"
+    line: 'MONGODB_OPTIONS="--journal --replSet {{ mongodb_primary }}"'
+  when: mongodb_primary is defined
+  notify: Restart mongodb
+
+- name: Configure Secondary Replica(s)
+  lineinfile:
+    dest: /etc/conf.d/mongodb
+    regexp: "MONGODB_OPTIONS=.*"
+    line: 'MONGODB_OPTIONS="--journal --replSet {{ mongodb_secondary }}"'
+  when: mongodb_secondary is defined
+  notify: Restart mongodb
+
+
+- name: Enable and Start MongoDB
+  service:
+    name: mongodb
+    state: started
+    enabled: true
+
+...
