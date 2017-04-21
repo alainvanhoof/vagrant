@@ -7,5 +7,5 @@ galaxy_info:
     - name: Alpine
   galaxy_tags: 
     - alpine
-    - mongodb
+    - redis
   dependencies: []

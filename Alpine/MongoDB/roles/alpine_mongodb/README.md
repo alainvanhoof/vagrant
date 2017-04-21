@@ -1,31 +1,46 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role creates a running Mongo instance with an option to install a Replication Set.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+To run the "agent-less" ansible against Alpine Linux it needs python, sudo and iproute2 installed (use apk).
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* mongodb_listen_addr: undefined
+* mongodb_primary: undefined (use name of Replication Set to define)
+* mongodb_secondary: undefined (use name of Replication Set to define)
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Install a MongoDB instance listening on localhost
+```yaml
+- hosts: dev-mongodb-01
+  become: true
+  roles:
+    - { role: alpine_mongodb }
+```
+Install a MongoDB replication set of 3
+```yaml
+- hosts: dev-mongodb-02
+  become: true
+  roles:
+    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_primary: rs0}
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: dev-mongodb-03,dev-mongodb-04
+  become: true
+  roles:
+    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_secondary: rs0}
+
+```
 
 License
 -------
@@ -35,4 +50,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Alain van Hoof : alain+ansible@lafeberhof.nl

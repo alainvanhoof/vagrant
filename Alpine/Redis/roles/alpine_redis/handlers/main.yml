@@ -1,0 +1,7 @@
+---
+# handlers file for alpine_redis
+
+- name: Restart redis
+  service:
+    name: redis
+    state: restarted

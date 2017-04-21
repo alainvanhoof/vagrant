@@ -1,0 +1,33 @@
+---
+# tasks file for alpine_redis
+
+- name: Install Redis package
+  apk:
+    name: redis
+    state: present
+    update_cache: yes
+    
+- name: Config Listen Address
+  lineinfile:
+    dest: /etc/redis.conf
+    regexp: 'bind .*'
+    line: 'bind {{ redis_listen_addr }}'
+    state: present
+  when: redis_listen_addr is defined
+  notify: Restart redis
+  
+- name: Configure Slave
+  lineinfile:
+    dest: /etc/redis.conf
+    line: 'slaveof  {{ redis_slaveof }} 6379'
+    state: present 
+  when: redis_slaveof is defined
+  notify: Restart redis
+
+- name: Start Redis
+  service:
+    name: redis
+    state: started
+    enabled: yes
+
+
