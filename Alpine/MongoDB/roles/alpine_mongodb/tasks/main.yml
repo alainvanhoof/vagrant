@@ -1,11 +1,17 @@
 ---
 # tasks file for alpine_mongodb
 
-- name: Enable testing repository
+- name: Enable edge community repository
   replace:
     dest: /etc/apk/repositories
-    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/testing"
-    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/testing"
+    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/community"
+    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/community"
+
+- name: Enable edge main repository
+  replace:
+    dest: /etc/apk/repositories
+    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/main"
+    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/main"
 
 - name: Install MongoDB package
   apk:
@@ -29,7 +35,7 @@
   when: mongodb_listen_port is defined
   notify: Restart mongodb
 
-- name: Configure Primary Replica
+- name: Configure Replica Set on Primary Replica
   lineinfile:
     dest: /etc/conf.d/mongodb
     regexp: "MONGODB_OPTIONS=.*"
@@ -37,7 +43,19 @@
   when: mongodb_primary is defined
   notify: Restart mongodb
 
-- name: Configure Secondary Replica(s)
+- name: Copy Primary Replica JS
+  template:
+    src: init_mongo_primary.js.j2
+    dest: /root/init_mongo.js
+  when: mongodb_primary is defined
+  
+- name: Copy Secondary Replica JS
+  template:
+    src: init_mongo_secondary.js.j2
+    dest: /root/init_mongo.js
+  when: mongodb_primary is defined
+
+- name: Configure Replica Set on Secondary Replica(s)
   lineinfile:
     dest: /etc/conf.d/mongodb
     regexp: "MONGODB_OPTIONS=.*"
@@ -45,11 +63,28 @@
   when: mongodb_secondary is defined
   notify: Restart mongodb
 
+- name: Copy Primary Replica JS
+  template:
+    src: init_mongo_secondary.js.j2
+    dest: /root/init_mongo.js
+  when: mongodb_secondary is defined
 
 - name: Enable and Start MongoDB
   service:
     name: mongodb
     state: started
     enabled: true
+    
+- name: Configure Primary via mongo command
+  shell: "mongo -h {{ mongodb_listen_addr }} < /root/init_mongo.js && touch /root/init.done"
+  args:
+    creates: /root/init.done
+  when: mongodb_secondary is defined
+
+- name: Configure Seconday via mongo command
+  shell: "mongo -h {{ mongodb_primary_addr }} < /root/init_mongo.js && touch /root/init.done"
+  args:
+    creates: /root/init.done
+  when: mongodb_secondary is defined
 
 ...
