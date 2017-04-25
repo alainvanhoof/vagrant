@@ -1,0 +1,9 @@
+---
+
+- hosts: dev-rocketchat-01
+  become: true
+  roles:
+    - { role: alpine_mongodb }
+    - { role: alpine_rocketchat }
+
+...

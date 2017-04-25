@@ -1,0 +1,6 @@
+#!/bin/bash
+cd /root/bundle 
+export PORT=3000
+export ROOT_URL=http://localhost:3000/
+export MONGO_URL=mongodb://localhost:27017/rocketchat
+/usr/bin/node main.js > /var/log/rocketchat.log &

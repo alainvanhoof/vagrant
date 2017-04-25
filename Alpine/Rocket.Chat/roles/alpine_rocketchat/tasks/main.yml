@@ -1,0 +1,47 @@
+---
+# tasks file for alpine_rocketchat
+
+- name: Enable edge community repository
+  lineinfile:
+    dest: /etc/apk/repositories
+    line: "http://dl-cdn.alpinelinux.org/alpine/v3.3/main"
+
+
+- name: Install NodeJS (version 4) package
+  apk:
+    name: "nodejs<5.0.0"
+    state: present
+    update_cache: yes
+    
+- name: Install packages needed by Rocketchat
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+     - g\+\+
+     - make
+     - graphicsmagick
+     - tar
+
+- name: Create startup script
+  template:
+     src: start_rocketchat.sh.j2
+     dest: /root/start_rocketchat.sh
+     mode: 0500  
+   
+- name: Download and extract RocketChat
+  unarchive:
+     src: https://rocket.chat/releases/latest/download
+     dest: /root
+     remote_src: True
+     validate_certs: False
+     creates: /root/bundle 
+   
+- name: Run node install on RocketChat source
+  shell: "cd /root/bundle/programs/server && /usr/bin/npm install --unsafe-perm && touch /root/build.done"
+  args:
+    creates: /root/build.done 
+  
+- name: Run RocketChat
+  shell: "bash /root/start_rocketchat.sh"
