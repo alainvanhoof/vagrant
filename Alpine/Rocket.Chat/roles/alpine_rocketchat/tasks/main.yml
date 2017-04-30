@@ -19,8 +19,7 @@
     state: present
     update_cache: yes
   with_items:
-     - g\+\+
-     - make
+     - alpine-sdk
      - graphicsmagick
      - tar
 

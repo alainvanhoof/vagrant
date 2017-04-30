@@ -1,0 +1,31 @@
+---
+# tasks file for alpine_jenkins
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - openjdk8-jre
+      - ttf-dejavu
+      - fontconfig
+      - curl
+      
+- name: Create /opt/jenkins
+  file:
+     dest: /opt/jenkins
+     state: directory
+     mode: 0755  
+
+- name: Getthe Jenkins WAR
+  get_url:
+      url: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
+      dest: /opt/jenkins/jenkins.war
+      
+- name: Start Jenkins
+  become: true
+  shell: "java -Djava.awt.headless=true -jar ./jenkins.war  /var/log/jenkins.log &"
+  args: 
+    chdir: /opt/jenkins
+       
+
