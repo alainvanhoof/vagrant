@@ -9,7 +9,8 @@
       - openjdk8-jre
       - ttf-dejavu
       - fontconfig
-      - curl
+      - git
+      - ruby
       
 - name: Create /opt/jenkins
   file:
@@ -17,15 +18,21 @@
      state: directory
      mode: 0755  
 
-- name: Getthe Jenkins WAR
+- name: Get the Jenkins WAR
   get_url:
       url: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
       dest: /opt/jenkins/jenkins.war
       
-- name: Start Jenkins
-  become: true
-  shell: "java -Djava.awt.headless=true -jar ./jenkins.war  /var/log/jenkins.log &"
-  args: 
-    chdir: /opt/jenkins
-       
+- name: Install Jenkins init.d
+  copy:
+      src: jenkins.init.d
+      dest: /etc/init.d/jenkins
+      mode: 0755  
+      
+- name: Start jenkins
+  service:
+      name: jenkins
+      state: started
+      enabled: true
+         
 
