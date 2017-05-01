@@ -53,7 +53,7 @@
   template:
     src: init_mongo_secondary.js.j2
     dest: /root/init_mongo.js
-  when: mongodb_primary is defined
+  when: mongodb_secondary is defined
 
 - name: Configure Replica Set on Secondary Replica(s)
   lineinfile:
@@ -63,12 +63,6 @@
   when: mongodb_secondary is defined
   notify: Restart mongodb
 
-- name: Copy Primary Replica JS
-  template:
-    src: init_mongo_secondary.js.j2
-    dest: /root/init_mongo.js
-  when: mongodb_secondary is defined
-
 - name: Enable and Start MongoDB
   service:
     name: mongodb
@@ -76,13 +70,13 @@
     enabled: true
     
 - name: Configure Primary via mongo command
-  shell: "mongo -h {{ mongodb_listen_addr }} < /root/init_mongo.js && touch /root/init.done"
+  shell: "mongo {{ mongodb_listen_addr }}/ < /root/init_mongo.js && touch /root/init.done"
   args:
     creates: /root/init.done
-  when: mongodb_secondary is defined
+  when: mongodb_primary is defined
 
 - name: Configure Seconday via mongo command
-  shell: "mongo -h {{ mongodb_primary_addr }} < /root/init_mongo.js && touch /root/init.done"
+  shell: "mongo {{ mongodb_primary_addr }}/ < /root/init_mongo.js && touch /root/init.done"
   args:
     creates: /root/init.done
   when: mongodb_secondary is defined

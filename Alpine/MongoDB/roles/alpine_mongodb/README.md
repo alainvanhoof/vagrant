@@ -14,6 +14,7 @@ Role Variables
 * mongodb_listen_addr: undefined
 * mongodb_primary: undefined (use name of Replication Set to define)
 * mongodb_secondary: undefined (use name of Replication Set to define)
+* mongodb_primary_addr: undefined (needs to be ip of primary when mongodb_secondary is defined)
 
 Dependencies
 ------------
@@ -21,14 +22,15 @@ Dependencies
 Example Playbook
 ----------------
 
-Install a MongoDB instance listening on localhost
+Install a MongoDB instance listening on localhost:
 ```yaml
 - hosts: dev-mongodb-01
   become: true
   roles:
     - { role: alpine_mongodb }
 ```
-Install a MongoDB replication set of 3
+
+Install a MongoDB replication set of 3:
 ```yaml
 - hosts: dev-mongodb-02
   become: true
@@ -38,8 +40,7 @@ Install a MongoDB replication set of 3
 - hosts: dev-mongodb-03,dev-mongodb-04
   become: true
   roles:
-    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_secondary: rs0}
-
+    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_secondary: rs0, mongodb_primary_addr: "10.0.0.12"}
 ```
 
 License
