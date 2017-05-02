@@ -1,0 +1,55 @@
+---
+# tasks file for alpine_gogs
+
+- name: Install packages needed by GoGS
+  apk:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - alpine-sdk
+      - tar
+      - git
+      - go
+      
+- name: Create /opt/gogs
+  file:
+     dest: /opt/gogs
+     state: directory
+     mode: 0755  
+
+- name: Install init.d
+  copy:
+     src: gogs.init.d
+     dest: /etc/init.d/gogs
+     mode: 0755
+    
+- name: Prepare GoGS build
+  shell: "GOPATH=/opt/gogs go get -u github.com/gogits/gogs"
+  args:
+      chdir: /opt/gogs
+      creates: /opt/gogs/src/github.com/gogits/gogs
+
+- name: Build GoGS
+  shell: "GOPATH=/opt/gogs go build"
+  args:
+      chdir: /opt/gogs/src/github.com/gogits/gogs/
+      creates: /opt/gogs/src/github.com/gogits/gogs/gogs
+
+- name: Create custom/conf/
+  file: 
+     dest: /opt/gogs/src/github.com/gogits/gogs/custom/conf
+     state: directory
+     mode: 0755
+      
+- name: Install custom app.ini
+  copy:
+     src: app.ini
+     dest: /opt/gogs/src/github.com/gogits/gogs/custom/conf/app.ini
+      
+- name: Start GoGS
+  service:
+      name: gogs
+      state: started
+      enabled: true
+
+...
