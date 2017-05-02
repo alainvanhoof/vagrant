@@ -1,0 +1,1 @@
+JENKINS_OPTS="-Dfile.encoding=UTF-8 -Djava.awt.headless=true"

@@ -23,6 +23,12 @@
      dest: /etc/init.d/gogs
      mode: 0755
     
+- name: Install conf.d
+  copy:
+     src: gogs.conf.d
+     dest: /etc/conf.d/gogs
+     mode: 0440
+
 - name: Prepare GoGS build
   shell: "GOPATH=/opt/gogs go get -u github.com/gogits/gogs"
   args:

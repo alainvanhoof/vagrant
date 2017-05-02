@@ -1,16 +1,30 @@
 #!/sbin/openrc-run
 
-DIR=/opt/gogs/src/github.com/gogits/gogs
-PORT=3000
 USER=root
+SERVICE="gogs"
+COMMAND="/opt/gogs/src/github.com/gogits/gogs/gogs"
+CMD_ARGS=${GOGS_OPTS}
+DIR="/opt/gogs"
 
-start_stop_daemon_args="--user ${USER} --chdir ${DIR}"
-command="${DIR}/gogs"
-command_args="web -port ${PORT}"
-command_background=yes
-pidfile=/var/run/gogs.pid
-
-depend()
-{
+depend() {
     need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting ${SERVICE}"
+    start-stop-daemon --background --start \
+    --make-pidfile --pidfile /run/${SERVICE}.pid \
+    --exec ${COMMAND} \
+    --user ${USER:-root} \
+    --chdir ${DIR} \
+    -- ${CMD_ARGS}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SERVICE}"
+    start-stop-daemon --stop --exec ${COMMAND} \
+    --pidfile /run/${SERVICE}.pid
+    eend $?
 }
