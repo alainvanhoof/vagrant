@@ -1,0 +1,74 @@
+---
+# tasks file for alpine_graphite
+
+- name: Install packages needed
+  apk:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - alpine-sdk
+      - python-dev
+      - libffi-dev
+      - py2-pip
+      - libffi
+      - py-cairo
+      
+- name: Install Carbon and Whisper via pip
+  pip:
+     name: "{{ item }}"
+  with_items:
+       - https://github.com/graphite-project/whisper/tarball/master
+       - https://github.com/graphite-project/carbon/tarball/master
+       - https://github.com/brutasse/graphite-api/tarball/master
+       - gunicorn
+       
+
+- name: Install init.d carbon-cache
+  copy:
+     src: carbon-cache.init.d
+     dest: /etc/init.d/carbon-cache
+     mode: 0755
+    
+- name: Install conf.d carbon-cache
+  copy:
+     src: carbon-cache.conf.d
+     dest: /etc/conf.d/carbon-cache
+     mode: 0440
+
+- name: Install init.d graphite-api
+  copy:
+     src: graphite-api.init.d
+     dest: /etc/init.d/graphite-api
+     mode: 0755
+    
+- name: Install conf.d graphite-api
+  copy:
+     src: graphite-api.conf.d
+     dest: /etc/conf.d/graphite-api
+     mode: 0440
+     
+- name: Configure Graphite-API
+  copy:
+     src: graphite-api.yaml
+     dest: /etc/graphite-api.yaml
+     mode: 0440
+
+- name: Configure Carbon-cache
+  copy:
+     src: carbon-cache/{{ item }}
+     dest: /opt/graphite/conf/{{ item }}
+  with_items: 
+      - carbon.conf
+      - storage-schemas.conf
+
+- name: Start Carbon-cache
+  service:
+      name: carbon-cache
+      state: started
+      enabled: true
+
+- name: Start Graphite API
+  service:
+      name: graphite-api
+      state: started
+      enabled: true

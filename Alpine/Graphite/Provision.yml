@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-graphite-01
+  become: true
+  roles:
+    - { role: alpine_graphite }
+
+...
