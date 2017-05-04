@@ -1,0 +1,4 @@
+---
+# vars file for alpine_grafana
+
+go_version: 1.8.1

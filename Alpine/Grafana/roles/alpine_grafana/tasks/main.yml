@@ -1,0 +1,62 @@
+---
+# tasks file for alpine_grafana
+
+- name: Install packages needed
+  apk:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - ca-certificates
+      - alpine-sdk
+      - go
+      - nodejs
+
+- name: Create /opt/grafana
+  file:
+     dest: /opt/grafana
+     state: directory
+     mode: 0755  
+      
+- name: Get Go {{ go_version }} source
+  unarchive:
+      src: https://golang.org/dl/go{{ go_version }}.src.tar.gz
+      dest: /opt
+      remote_src: True
+          
+- name: Patch the source of Go
+  patch:
+     src: no-pic.patch
+     basedir: /opt/go/
+     strip: 1
+
+- name: Install init.d
+  copy:
+     src: grafana.init.d
+     dest: /etc/init.d/grafana
+     mode: 0755
+    
+- name: Install conf.d
+  copy:
+     src: grafana.conf.d
+     dest: /etc/conf.d/grafana
+     mode: 0440
+    
+#export GOROOT_BOOTSTRAP="$(go env GOROOT)"
+#cd /opt/go/src
+#./make.bash 
+#apk del go
+#ln -s /opt/go/bin/go /usr/bin/go
+#mkdir -p /opt/grafana
+#export GOPATH=/opt/grafana
+#cd /opt/grafana
+#go get github.com/grafana/grafana
+#cd $GOPATH/src/github.com/grafana/grafana
+#go run build.go setup
+#go run build.go build
+#npm install -g yarn
+#yarn install --pure-lockfile
+#npm install -g grunt-cli
+#grunt
+##./bin/grafana-server
+#service grafana start   
+

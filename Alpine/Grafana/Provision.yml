@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-grafana-01
+  become: true
+  roles:
+    - { role: alpine_grafana }
+
+...
