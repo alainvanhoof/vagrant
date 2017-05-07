@@ -14,7 +14,7 @@
       - libffi
       - py-cairo
       
-- name: Install Carbon and Whisper via pip
+- name: Install Carbon, Whisper and Graphite-API via pip
   pip:
      name: "{{ item }}"
   with_items:
@@ -23,7 +23,6 @@
        - https://github.com/brutasse/graphite-api/tarball/master
        - gunicorn
        
-
 - name: Install init.d carbon-cache
   copy:
      src: carbon-cache.init.d
@@ -43,8 +42,8 @@
      mode: 0755
     
 - name: Install conf.d graphite-api
-  copy:
-     src: graphite-api.conf.d
+  template:
+     src: graphite-api.conf.d.j2
      dest: /etc/conf.d/graphite-api
      mode: 0440
      
