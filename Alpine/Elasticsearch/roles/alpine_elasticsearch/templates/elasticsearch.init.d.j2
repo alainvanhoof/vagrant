@@ -14,6 +14,7 @@ depend() {
 
 start() {
     ebegin "Starting ${SERVICE}"
+    ulimit -n 65536 
     start-stop-daemon --background --start \
     --make-pidfile --pidfile /run/${SERVICE}.pid \
     --exec ${COMMAND} \
