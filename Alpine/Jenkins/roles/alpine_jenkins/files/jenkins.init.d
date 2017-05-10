@@ -1,6 +1,7 @@
 #!/sbin/openrc-run
 
-USER=root
+USER=jenkins
+GROUP=jenkins
 SERVICE="jenkins"
 COMMAND="/usr/bin/java"
 CMD_ARGS="${JENKINS_OPTS} -jar /opt/jenkins/jenkins.war"
@@ -17,6 +18,7 @@ start() {
     --make-pidfile --pidfile /run/${SERVICE}.pid \
     --exec ${COMMAND} \
     --user ${USER:-root} \
+    --group ${GROUP:-root} \
     --chdir ${DIR} \
     -- ${CMD_ARGS}
     eend $?

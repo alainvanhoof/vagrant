@@ -13,6 +13,17 @@
       - git
       - ruby
       
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: jenkins
+      fail_key: false
+      
+- name: Create user for jenkins
+  command: adduser jenkins -DH -s /sbin/nologin -h /opt/jenkins
+  when: not getent_passwd.jenkins
+
+      
 - name: Create /opt/jenkins
   file:
      dest: /opt/jenkins
@@ -24,6 +35,14 @@
       url: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
       dest: /opt/jenkins/jenkins.war
       
+- name: Let user own /opt/jenkins
+  file:
+     dest: /opt/jenkins
+     state: directory
+     owner: jenkins
+     group: jenkins
+     recurse: true 
+
 - name: Install Jenkins init.d
   copy:
       src: jenkins.init.d
