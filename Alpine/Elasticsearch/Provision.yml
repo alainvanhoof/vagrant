@@ -1,0 +1,13 @@
+---
+
+- hosts: dev-es-01
+  become: true
+  roles:
+    - { role: alpine_elasticsearch }
+
+- hosts: dev-es-02
+  become: true
+  roles:
+    - { role: alpine_elasticsearch }
+
+...
