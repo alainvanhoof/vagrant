@@ -1,0 +1,74 @@
+---
+# tasks file for alpine_kibana
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+      - nodejs
+      
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: kibana
+      fail_key: false
+      
+- name: Create user for kibana
+  command: adduser kibana -DH -s /sbin/nologin -h /opt/kibana-{{ kibana_version }}
+  when: not getent_passwd.kibana
+      
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+
+- name: Get Kibana 
+  unarchive:
+      src: https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-linux-x86_64.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/kibana-{{ kibana_version }}
+
+- name: Remove nodejs as supplied by kibana
+  file:
+      path: /opt/kibana-{{ kibana_version }}/node
+      state: absent
+
+- name: Let user own /opt/kibana-{{ kibana_version }}
+  file:
+     dest: /opt/kibana-{{ kibana_version }}
+     state: directory
+     owner: kibana
+     group: kibana
+     recurse: true
+     
+- name: Configure Kibana
+  template: 
+      src: kibana.yml.j2
+      dest: /opt/kibana-{{ kibana_version }}/config/kibana.yml
+      mode: 0644
+      
+- name: Install Kibana init.d
+  template:
+      src: kibana.init.d.j2
+      dest: /etc/init.d/kibana
+      mode: 0755  
+
+- name: Install Kibana conf.d
+  copy:
+      src: kibana.conf.d
+      dest: /etc/conf.d/kibana
+      mode: 0440
+      
+- name: Start kibana
+  service:
+      name: kibana
+      state: started
+      enabled: true
+         
+

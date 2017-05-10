@@ -1,0 +1,8 @@
+---
+# defaults file for alpine_kibana
+
+kibana_version: 5.4.0-linux-x86_64
+kibana_addr: 127.0.0.1
+
+es_addr: 127.0.0.1
+es_port: 9200
