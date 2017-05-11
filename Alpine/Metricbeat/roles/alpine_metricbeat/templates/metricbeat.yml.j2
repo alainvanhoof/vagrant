@@ -1,0 +1,25 @@
+logging.level: warning
+logging.to_files: true
+logging.to_syslog: false
+logging.files:
+  path: /var/log/
+  name: metricbeat.log
+  keepfiles: 7
+
+metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - filesystem
+    - memory
+    - network
+    - process
+  enabled: true
+  period: 10s
+  processes: ['.*']
+  cpu_ticks: false
+  
+output.elasticsearch:
+  hosts: ["{{ ship_addr}}:{{ ship_port }}"]
+
+
