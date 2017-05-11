@@ -29,7 +29,7 @@
 
 - name: Get Kibana 
   unarchive:
-      src: https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-linux-x86_64.tar.gz
+      src: https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}.tar.gz
       dest: /opt
       remote_src: True
       creates: /opt/kibana-{{ kibana_version }}
