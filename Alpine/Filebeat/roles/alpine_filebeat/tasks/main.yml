@@ -1,0 +1,50 @@
+---
+# tasks file for alpine_filebeat
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+      
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+
+- name: Get Filebeat 
+  unarchive:
+      src: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ filebeat_version }}.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/filebeat-{{ filebeat_version }}
+
+- name: Configure Filebeat
+  template: 
+      src: filebeat.yml.j2
+      dest: /opt/filebeat-{{ filebeat_version }}/filebeat.yml
+      mode: 0644
+      
+- name: Install Filebeat init.d
+  template:
+      src: filebeat.init.d.j2
+      dest: /etc/init.d/filebeat
+      mode: 0755  
+
+- name: Install Filebeat conf.d
+  copy:
+      src: filebeat.conf.d
+      dest: /etc/conf.d/filebeat
+      mode: 0440
+      
+- name: Start filebeat
+  service:
+      name: filebeat
+      state: started
+      enabled: true
+         
+
