@@ -1,0 +1,6 @@
+network.host: {{ es_listen_addr }}
+node.name: {{ ansible_hostname }}
+cluster.name: {{ es_cluster_name }}
+{% if es_unicast_host is defined %}
+discovery.zen.ping.unicast.hosts: ["{{ es_unicast_host }}"]
+{% endif %}

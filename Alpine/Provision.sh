@@ -2,6 +2,7 @@ sudo sed -i -e "s@#http://dl-cdn.alpinelinux.org/alpine/v@http://dl-cdn.alpineli
 sudo apk update 
 sudo apk upgrade
 sudo apk add haveged
+sudo rc-update add haveged boot
 sudo apk add openssl
 sudo apk add bash
 sudo apk add python

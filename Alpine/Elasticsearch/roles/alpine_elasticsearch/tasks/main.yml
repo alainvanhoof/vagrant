@@ -39,7 +39,25 @@
      state: directory
      owner: elsearch
      group: elsearch
-     recurse: true 
+     recurse: true
+     
+- name: Set sysctl value fs.file-max
+  sysctl: 
+      name: fs.file-max
+      value: 70000
+      state: present
+
+- name: Set sysctl value vm.max_map_count
+  sysctl: 
+      name: vm.max_map_count
+      value: 262144
+      state: present
+     
+- name: Configure Elasticsearch
+  template: 
+      src: elasticsearch.yml.j2
+      dest: /opt/elasticsearch-{{ elasticsearch_version }}/config/elasticsearch.yml
+      mode: 0644
   
 - name: Install Elasticsearch init.d
   template:

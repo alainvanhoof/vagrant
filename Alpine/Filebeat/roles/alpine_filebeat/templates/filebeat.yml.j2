@@ -1,0 +1,18 @@
+logging.level: warning
+logging.to_files: true
+logging.to_syslog: false
+logging.files:
+  path: /var/log/
+  name: filebeat.log
+  keepfiles: 7
+
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/log/*.log
+    - /var/log/messages
+
+output.elasticsearch:
+  hosts: ["{{ ship_addr}}:{{ ship_port }}"]
+
+

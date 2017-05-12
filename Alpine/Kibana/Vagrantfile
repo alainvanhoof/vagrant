@@ -1,12 +1,9 @@
-cluster = [ { :name => "dev-es-01", :ip => "10.0.0.11" , :net => "dev.net"},
-            { :name => "dev-es-02", :ip => "10.0.0.12" , :net => "dev.net"}, 
-            { :name => "dev-es-03", :ip => "10.0.0.13" , :net => "dev.net"},
-            { :name => "dev-es-04", :ip => "10.0.0.14" , :net => "dev.net"} ]
+cluster = [ { :name => "dev-kibana-01", :ip => "10.0.0.17" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = 4096
-    vb.cpus = 1
+    vb.memory = 2048
+    vb.cpus = 2
     vb.linked_clone = true
  end
 

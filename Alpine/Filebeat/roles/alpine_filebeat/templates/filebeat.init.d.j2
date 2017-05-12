@@ -1,11 +1,11 @@
 #!/sbin/openrc-run
 
-USER=elsearch
-GROUP=elsearch
-SERVICE="elasticsearch"
-COMMAND="/opt/elasticsearch-{{ elasticsearch_version }}/bin/elasticsearch"
-CMD_ARGS="${ELASTICSEARCH_OPTS}"
-DIR="/opt/elasticsearch-{{ elasticsearch_version }}"
+USER=root
+GROUP=root
+SERVICE="filebeat"
+COMMAND="/opt/filebeat-{{ filebeat_version }}/filebeat"
+CMD_ARGS="${FILEBEATS_OPTS}"
+DIR="/opt/filebeat-{{ filebeat_version }}"
 
 depend() {
     need net
@@ -14,7 +14,6 @@ depend() {
 
 start() {
     ebegin "Starting ${SERVICE}"
-    ulimit -n 65536 
     start-stop-daemon --background --start \
     --make-pidfile --pidfile /run/${SERVICE}.pid \
     --exec ${COMMAND} \
