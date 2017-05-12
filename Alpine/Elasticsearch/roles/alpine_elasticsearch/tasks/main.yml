@@ -33,7 +33,7 @@
       remote_src: True
       creates: /opt/elasticsearch-{{ elasticsearch_version }}
 
-- name: Let user own /opt
+- name: Let user own /opt/elasticsearch-{{ elasticsearch_version }}
   file:
      dest: /opt/elasticsearch-{{ elasticsearch_version }}
      state: directory
