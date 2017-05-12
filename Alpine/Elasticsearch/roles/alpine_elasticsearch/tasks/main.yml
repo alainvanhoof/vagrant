@@ -25,6 +25,14 @@
      dest: /opt
      state: directory
      mode: 0755  
+     
+- name: Create log directory
+  file:
+     dest: /var/log/elasticsearch
+     owner: elsearch
+     group: elsearch
+     state: directory
+     mode: 0770  
   
 - name: Get Elasticsearch source
   unarchive:

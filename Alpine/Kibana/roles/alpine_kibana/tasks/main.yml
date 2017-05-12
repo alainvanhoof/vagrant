@@ -27,6 +27,14 @@
      state: directory
      mode: 0755  
 
+- name: Create log directory
+  file:
+     dest: /var/log/kibana
+     owner: kibana
+     group: kibana
+     state: directory
+     mode: 0770  
+
 - name: Get Kibana 
   unarchive:
       src: https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}.tar.gz
