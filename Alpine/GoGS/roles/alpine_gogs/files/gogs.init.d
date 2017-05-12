@@ -1,6 +1,7 @@
 #!/sbin/openrc-run
 
-USER=root
+USER=git
+GROUP=git
 SERVICE="gogs"
 COMMAND="/opt/gogs/src/github.com/gogits/gogs/gogs"
 CMD_ARGS=${GOGS_OPTS}
@@ -17,6 +18,7 @@ start() {
     --make-pidfile --pidfile /run/${SERVICE}.pid \
     --exec ${COMMAND} \
     --user ${USER:-root} \
+    --group ${GROUP:-root} \
     --chdir ${DIR} \
     -- ${CMD_ARGS}
     eend $?

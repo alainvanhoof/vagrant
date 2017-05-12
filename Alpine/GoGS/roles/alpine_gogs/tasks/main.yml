@@ -11,24 +11,30 @@
       - tar
       - git
       - go
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: git
+      fail_key: false
+      
+- name: Create user for gogs
+  command: adduser git -D -s /sbin/nologin
+  when: not getent_passwd.git
+  
+- name: Create log directory
+  file:
+     dest: /var/log/gogs
+     owner: git
+     group: git
+     state: directory
+     mode: 0770  
       
 - name: Create /opt/gogs
   file:
      dest: /opt/gogs
      state: directory
      mode: 0755  
-
-- name: Install init.d
-  copy:
-     src: gogs.init.d
-     dest: /etc/init.d/gogs
-     mode: 0755
-    
-- name: Install conf.d
-  copy:
-     src: gogs.conf.d
-     dest: /etc/conf.d/gogs
-     mode: 0440
 
 - name: Prepare GoGS build
   shell: "GOPATH=/opt/gogs go get -u github.com/gogits/gogs"
@@ -52,7 +58,27 @@
   copy:
      src: app.ini
      dest: /opt/gogs/src/github.com/gogits/gogs/custom/conf/app.ini
-      
+     
+- name: Let user own /opt/gogs
+  file:
+     dest: /opt/gogs
+     state: directory
+     owner: git
+     group: git
+     recurse: true 
+     
+- name: Install init.d
+  copy:
+     src: gogs.init.d
+     dest: /etc/init.d/gogs
+     mode: 0755
+    
+- name: Install conf.d
+  copy:
+     src: gogs.conf.d
+     dest: /etc/conf.d/gogs
+     mode: 0440
+
 - name: Start GoGS
   service:
       name: gogs
