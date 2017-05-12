@@ -8,6 +8,10 @@ logging.files:
 
 packetbeat.interfaces.device: any
 
+packetbeat.flows:
+  timeout: 30s
+  period: 10s
+
 output.elasticsearch:
   hosts: ["{{ ship_addr}}:{{ ship_port }}"]
 
