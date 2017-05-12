@@ -1,0 +1,67 @@
+---
+# tasks file for alpine_packetbeat
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+      
+- name: Get the key for glibc 
+  get_url:
+    url: https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+    dest: /etc/apk/keys/sgerrand.rsa.pub
+    mode: 0440
+
+- name: Get glibc 
+  get_url:
+    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
+    dest: /tmp/glibc-2.25-r0.apk
+    mode: 0440
+
+- name: Install packages glibc
+  apk:
+    name: /tmp/glibc-2.25-r0.apk
+    state: present
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+
+- name: Get packetbeat 
+  unarchive:
+      src: https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-{{ packetbeat_version }}.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/packetbeat-{{ packetbeat_version }}
+
+- name: Configure packetbeat
+  template: 
+      src: packetbeat.yml.j2
+      dest: /opt/packetbeat-{{ packetbeat_version }}/packetbeat.yml
+      mode: 0644
+      
+- name: Install packetbeat init.d
+  template:
+      src: packetbeat.init.d.j2
+      dest: /etc/init.d/packetbeat
+      mode: 0755  
+
+- name: Install packetbeat conf.d
+  copy:
+      src: packetbeat.conf.d
+      dest: /etc/conf.d/packetbeat
+      mode: 0440
+      
+- name: Start packetbeat
+  service:
+      name: packetbeat
+      state: started
+      enabled: true
+         
+

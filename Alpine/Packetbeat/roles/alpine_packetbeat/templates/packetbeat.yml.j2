@@ -1,0 +1,14 @@
+logging.level: warning
+logging.to_files: true
+logging.to_syslog: false
+logging.files:
+  path: /var/log/
+  name: packetbeat.log
+  keepfiles: 7
+
+packetbeat.interfaces.device: any
+
+output.elasticsearch:
+  hosts: ["{{ ship_addr}}:{{ ship_port }}"]
+
+
