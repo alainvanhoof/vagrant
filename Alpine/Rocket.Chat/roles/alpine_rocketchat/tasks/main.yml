@@ -13,7 +13,7 @@
     state: present
     update_cache: yes
     
-- name: Install packages needed by Rocketchat
+- name: Install packages needed by RocketChat
   apk:
     name: "{{ item }}"
     state: present
@@ -23,11 +23,30 @@
      - graphicsmagick
      - tar
 
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: rocketchat
+      fail_key: false
+      
+- name: Create user for RocketChat
+  command: adduser rocketchat -DH -s /sbin/nologin
+  when: not getent_passwd.rocketchat
+
 - name: Create /opt/rocketchat
   file:
      dest: /opt/rocketchat
      state: directory
-     mode: 0755  
+     mode: 0755
+
+- name: Create log directory
+  file:
+     dest: /var/log/rocketchat
+     owner: rocketchat
+     group: rocketchat
+     state: directory
+     mode: 0770  
+ 
 
 - name: Install init.d
   copy:
@@ -36,8 +55,8 @@
      mode: 0755
     
 - name: Install conf.d
-  copy:
-     src: rocketchat.conf.d
+  template:
+     src: rocketchat.conf.d.j2
      dest: /etc/conf.d/rocketchat
      mode: 0440
    
@@ -48,12 +67,21 @@
      remote_src: True
      validate_certs: False
      creates: /opt/rocketchat/bundle 
-   
-- name: Run node install on RocketChat source
-  shell: "cd /opt/rocketchat/bundle/programs/server && /usr/bin/npm install --unsafe-perm && touch /root/build.done"
-  args:
-    creates: /root/build.done 
+
+- name: Install RocketChat using nmp
+  npm:
+      state: present
+      path: /opt/rocketchat/bundle/programs/server
+      executable: /usr/bin/npm
   
+- name: Let user own /opt/rocketchat
+  file:
+     dest: /opt/rocketchat
+     state: directory
+     owner: rocketchat
+     group: rocketchat
+     recurse: true
+
 - name: Start RocketChat
   service:
       name: rocketchat
