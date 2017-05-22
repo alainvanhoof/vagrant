@@ -4,7 +4,7 @@ USER=root
 GROUP=root
 SERVICE="filebeat"
 COMMAND="/opt/filebeat-{{ filebeat_version }}/filebeat"
-CMD_ARGS="${FILEBEATS_OPTS}"
+CMD_ARGS="${FILEBEAT_OPTS}"
 DIR="/opt/filebeat-{{ filebeat_version }}"
 
 depend() {
