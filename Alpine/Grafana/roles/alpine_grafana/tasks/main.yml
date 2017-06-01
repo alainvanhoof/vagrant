@@ -8,87 +8,41 @@
     update_cache: yes
   with_items:
       - ca-certificates
-      - alpine-sdk
-      - go
-      - nodejs
+      - tar
 
-- name: Create /opt/grafana
+- name: Get the key for glibc 
+  get_url:
+    url: https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+    dest: /etc/apk/keys/sgerrand.rsa.pub
+    mode: 0440
+
+- name: Get glibc 
+  get_url:
+    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
+    dest: /tmp/glibc-2.25-r0.apk
+    mode: 0440
+
+- name: Install packages glibc
+  apk:
+    name: /tmp/glibc-2.25-r0.apk
+    state: present
+
+- name: Create /opt
   file:
-     dest: /opt/grafana
+     dest: /opt
      state: directory
      mode: 0755  
       
-- name: Get Go {{ go_version }} source
+- name: Get Grafana
   unarchive:
-      src: https://golang.org/dl/go{{ go_version }}.src.tar.gz
+      src: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-{{ grafana_version }}.linux-x64.tar.gz
       dest: /opt
       remote_src: True
-      creates: /opt/go
-          
-- name: Patch the source of Go {{ go_version }}
-  patch:
-     src: no-pic.patch
-     basedir: /opt/go/
-     strip: 1
-     
-- name: Build Go {{ go_version }}
-  command: >
-      ./make.bash
-      chdir=/opt/go/src 
-      creates=/opt/go/bin/go
-  environment:
-      GOROOT_BOOTSTRAP: /usr/lib/go
-
-- name: Remove go package to avoid confusion
-  apk:
-      name: go
-      state: absent
-
-- name: Create symlink to /usr/bin
-  file:
-    src: /opt/go/bin/go
-    dest: /usr/bin/go
-    state: link
-
-- name: Get Grafana
-  command: >
-      go get github.com/grafana/grafana
-      chdir=/opt/grafana
-      creates=/opt/grafana/src/github.com/grafana
-  ignore_errors: yes
-  environment:
-      GOROOT: /opt/go
-      GOPATH: /opt/grafana
+      creates: /opt/grafana-{{ grafana_version }}
       
-- name: Setup the Build of Grafana
-  command: >
-      go run build.go setup
-      chdir=/opt/grafana/src/github.com/grafana/grafana
-  environment:
-      GOROOT: /opt/go
-      GOPATH: /opt/grafana
-
-- name: Build Grafana
-  command: >
-      go run build.go build
-      chdir=/opt/grafana/src/github.com/grafana/grafana
-  environment:
-      GOROOT: /opt/go
-      GOPATH: /opt/grafana
-
-- name: Build Frontend of Grafana
-  command: >
-      {{ item }}
-      chdir=/opt/grafana/src/github.com/grafana/grafana
-  with_items: 
-      - npm install -g yarn
-      - yarn install --pure-lockfile
-      - npm install -g grunt-cli
-      - grunt
-
 - name: Install init.d
-  copy:
-     src: grafana.init.d
+  template:
+     src: grafana.init.d.j2
      dest: /etc/init.d/grafana
      mode: 0755
     

@@ -2,9 +2,9 @@
 
 USER=root
 SERVICE="grafana"
-COMMAND="/opt/grafana/src/github.com/grafana/grafana/bin/grafana-server"
+COMMAND="/opt/grafana-{{ grafana_version }}/bin/grafana-server"
 CMD_ARGS=${GRAFANA_OPTS}
-DIR="/opt/grafana/src/github.com/grafana/grafana"
+DIR="/opt/grafana-{{ grafana_version }}"
 
 depend() {
     need net
