@@ -1,0 +1,73 @@
+---
+# tasks file for alpine_go-server
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: True
+  with_items:
+      - openjdk8-jre
+      - git
+      - tar
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: gocd
+      fail_key: false
+      
+- name: Create user for GOcd
+  command: adduser gocd -DH -s /sbin/nologin
+  when: not getent_passwd.gocd
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+     
+- name: Create log directory
+  file:
+     dest: /var/log/go-server
+     owner: gocd
+     group: gocd
+     state: directory
+     mode: 0770  
+     
+- name: Get GOcd
+  unarchive:
+      src: https://download.gocd.org/binaries/{{ go_server_version }}-{{ go_server_build }}/generic/go-server-{{ go_server_version }}-{{ go_server_build }}.zip
+      dest: /opt
+      remote_src: True
+      creates: /opt/go-server-{{ go_server_version }}
+
+- name: Let user own /opt/go-server-{{ go_server_version }}
+  file:
+     dest: /opt/go-server-{{ go_server_version }}
+     state: directory
+     owner: gocd
+     group: gocd
+     recurse: true
+
+- name: Install GOcd Server init.d
+  template:
+      src: go-server.init.d.j2
+      dest: /etc/init.d/go-server
+      mode: 0755  
+
+- name: Install GOcd Server conf.d
+  copy:
+      src: go-server.conf.d
+      dest: /etc/conf.d/go-server
+      mode: 0440
+      
+- name: Start GOcd Server
+  service:
+      name: go-server
+      state: started
+      enabled: true
+
+
+
+  
