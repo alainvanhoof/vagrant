@@ -4,5 +4,10 @@
   become: true
   roles:
     - { role: alpine_go_server }
+    - { role: alpine_go_agent }
+- hosts: dev-gocd-02
+  become: true
+  roles:
+    - { role: alpine_go_agent, go_agent_server: 10.0.0.92 }
 
 ...

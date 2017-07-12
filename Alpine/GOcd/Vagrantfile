@@ -1,4 +1,5 @@
-cluster = [ { :name => "dev-gocd-01", :ip => "10.0.0.92" , :net => "dev.net"} ]
+cluster = [ { :name => "dev-gocd-01", :ip => "10.0.0.92" , :net => "dev.net"},
+            { :name => "dev-gocd-02", :ip => "10.0.0.93" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|

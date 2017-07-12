@@ -1,0 +1,73 @@
+---
+# tasks file for alpine_go-agent
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: True
+  with_items:
+      - openjdk8-jre
+      - git
+      - tar
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: gocd
+      fail_key: false
+      
+- name: Create user for GOcd
+  command: adduser gocd -DH -s /sbin/nologin
+  when: not getent_passwd.gocd
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+     
+- name: Create log directory
+  file:
+     dest: /var/log/go-agent
+     owner: gocd
+     group: gocd
+     state: directory
+     mode: 0770  
+     
+- name: Get GOcd
+  unarchive:
+      src: https://download.gocd.org/binaries/{{ go_agent_version }}-{{ go_agent_build }}/generic/go-agent-{{ go_agent_version }}-{{ go_agent_build }}.zip
+      dest: /opt
+      remote_src: True
+      creates: /opt/go-agent-{{ go_agent_version }}
+
+- name: Let user own /opt/go-agent-{{ go_agent_version }}
+  file:
+     dest: /opt/go-agent-{{ go_agent_version }}
+     state: directory
+     owner: gocd
+     group: gocd
+     recurse: true
+
+- name: Install GOcd Server init.d
+  template:
+      src: go-agent.init.d.j2
+      dest: /etc/init.d/go-agent
+      mode: 0755  
+
+- name: Install GOcd Agent conf.d
+  template:
+      src: go-agent.conf.d.j2
+      dest: /etc/conf.d/go-agent
+      mode: 0440
+      
+- name: Start GOcd Agent
+  service:
+      name: go-agent
+      state: started
+      enabled: true
+
+
+
+  

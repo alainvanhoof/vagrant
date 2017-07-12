@@ -1,0 +1,13 @@
+galaxy_info:
+  author: Alain van Hoof
+  description: GO (Continuois Delivery) for Alpine Linux
+  license: license (GPLv2, CC-BY, etc)
+  min_ansible_version: 2.0
+  platforms:
+    - name: Alpine
+  galaxy_tags: 
+    - alpine
+    - go
+    - gocd
+    - go-agent
+  dependencies: []
