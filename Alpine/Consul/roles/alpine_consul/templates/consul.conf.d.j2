@@ -1,0 +1,7 @@
+{% if servers is defined %}
+CONSUL_OPTS="agent -server -data-dir=/opt/consul -bind={{ consul_listen_addr }} -bootstrap-expect={{ servers }} -retry-join {{ join }}"
+{% elif ui is defined %}
+CONSUL_OPTS="agent -ui -data-dir=/opt/consul -bind={{ consul_listen_addr }} -client={{ consul_listen_addr }} -retry-join {{ join }}"
+{% else %}
+CONSUL_OPTS="agent -data-dir=/opt/consul -client={{ consul_listen_addr }} -retry-join {{ join }}"
+{% endif %}

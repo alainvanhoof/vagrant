@@ -1,0 +1,13 @@
+---
+
+- hosts: dev-consul-01,dev-consul-02,dev-consul-03
+  become: true
+  roles:
+    - { role: alpine_consul, servers: 3, join: 10.0.0.71 , consul_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+- hosts: dev-consul-04
+  become: true
+  roles:
+    - { role: alpine_consul, ui: true, join: 10.0.0.71 , consul_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...

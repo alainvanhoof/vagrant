@@ -1,0 +1,71 @@
+---
+# tasks file for alpine_consul
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: consul
+      fail_key: false
+      
+- name: Create user for consul
+  command: adduser consul -DH -s /sbin/nologin -h /opt/consul
+  when: not getent_passwd.consul
+     
+- name: Create consul directories
+  file:
+     dest: "{{ item }}"
+     state: directory
+     mode: 0755
+  with_items:
+     - /opt/consul/bin
+     - /etc/consul.d
+
+- name: Create /etc/consul.d/ for configuration
+  file:
+     dest: /etc/consul.d/
+     state: directory
+     mode: 0755  
+
+- name: Create /var/consul/ for persistent data
+  file:
+     dest: /etc/consul.d/
+     state: directory
+     mode: 0755  
+
+- name: Get consul 
+  unarchive:
+    src: https://releases.hashicorp.com/consul/0.9.2/consul_0.9.2_linux_amd64.zip
+    dest: /opt/consul/bin
+    owner: consul
+    group: consul
+    validate_certs: False
+    remote_src: True
+
+- name: Let user own consul directories
+  file:
+     dest: "{{ item }}"
+     state: directory
+     owner: consul
+     group: consul
+     recurse: true
+  with_items:
+     - /opt/consul
+     - /etc/consul.d
+  
+- name: Install Consul init.d
+  copy:
+      src: consul.init.d
+      dest: /etc/init.d/consul
+      mode: 0755  
+
+- name: Install Consul conf.d
+  template:
+      src: consul.conf.d.j2
+      dest: /etc/conf.d/consul
+      mode: 0440
+      
+- name: Start Consul
+  service:
+      name: consul
+      state: started
+      enabled: true
