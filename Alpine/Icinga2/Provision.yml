@@ -1,0 +1,11 @@
+---
+
+- hosts: dev-icinga01
+  become: true
+  roles:
+    - { role: alpine_nginx, php5: true }
+    - { role: alpine_postgresql, pg_listen_addr: localhost, pg_db_name: icinga2, pg_db_user: icinga2user, pg_db_pass: icinga2passwd }
+    - { role: alpine_postgresql, pg_listen_addr: localhost, pg_db_name: icingaweb2, pg_db_user: icingaweb2user, pg_db_pass: icingaweb2passwd }
+    - { role: alpine_icinga2 }
+
+...

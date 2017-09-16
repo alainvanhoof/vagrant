@@ -1,0 +1,95 @@
+---
+# tasks file for alpine_icinga2
+
+- name: Install packages needed
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+      - icinga2
+      - icingaweb2
+      - php5-gettext
+      - php5-ctype
+      - php5-openssl
+      - php5-pdo_pgsql
+      - php5-json
+      
+- name: Add icinga2 to pg_hba.conf
+  lineinfile:
+    dest: /var/lib/postgresql/9.6/data/pg_hba.conf
+    line: "{{ item }}"
+  with_items:
+    - 'local icinga2    icinga2                 trust'
+    - 'host  icinga2    icinga2    127.0.0.1/32 trust'
+    - 'host  icinga2    icinga2    ::1/128      trust'
+
+- name: Create icinga2 tables
+  command: su - postgres -c 'PGPASSWORD=icinga2passwd psql -U icinga2user -d icinga2 < /usr/share/icinga2-ido-pgsql/schema/pgsql.sql'
+
+- name: Add icingaweb2 to pg_hba.conf
+  lineinfile:
+    dest: /var/lib/postgresql/9.6/data/pg_hba.conf
+    line: "{{ item }}"
+  with_items:
+    - 'local icingaweb2 icingaweb2              trust'
+    - 'host  icingaweb2 icingaweb2 127.0.0.1/32 trust'
+    - 'host  icingaweb2 icingaweb2 ::1/128      trust'
+
+- name: Create icingaweb2 tables
+  command: su - postgres -c 'PGPASSWORD=icingaweb2passwd psql -U icingaweb2user -d icingaweb2 < /usr/share/webapps/icingaweb2/etc/schema/pgsql.schema.sql'
+
+#- name: Create admin user for icingaweb
+#  command: su - postgres -c 'PASWD=`cat /etc/icingaweb2/setup.token` psql icingaweb2 -c \"INSERT INTO icingaweb_user (name, active, password_hash) VALUES (\'admin\', 1, \'$PASWD\')\";'
+
+- name: Configure nginx for icingaweb2
+  copy:
+      src: nginx.default.conf
+      dest: /etc/nginx/conf.d/default.conf
+      
+- name: Configure php-fpm for icingaweb2
+  lineinfile:
+      dest: /etc/php5/php-fpm.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  with_items:
+      - { line: "user = nginx", regexp: "^user ="}
+      - { line: "group = nginx", regexp: "^group ="}
+      
+- name: Add nginx to the icingaweb2 group
+  command: "addgroup nginx icingaweb2"
+  
+- name: Copy Config files icinga2
+  copy: 
+      src: icinga2/features-available/{{ item }}
+      dest: /etc/icinga2/features-available/{{ item }}
+  with_items:
+      - ido-pgsql.conf
+      
+- name: Copy Config files icingaweb2
+  copy: 
+      src: icingaweb2/{{ item }}
+      dest: /etc/icingaweb2/{{ item }}
+  with_items:
+      - authentication.ini
+      - config.ini
+      - resources.ini
+      - roles.ini
+      
+- name: Create /etc/icingaweb2/modules/monitoring
+  file:
+     dest: /etc/icingaweb2/modules/monitoring
+     state: directory
+     mode: 0755  
+
+- name: Copy Config files icingaweb2/modules/monitoring
+  copy: 
+      src: icingaweb2/modules/monitoring/{{ item }}
+      dest: /etc/icingaweb2/modules/monitoring/{{ item }}
+  with_items:
+      - backends.ini
+      - config.ini
+      - commandtransports.ini
+ 
+
+
