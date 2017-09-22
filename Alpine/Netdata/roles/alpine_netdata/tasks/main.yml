@@ -1,0 +1,58 @@
+---
+# tasks file for alpine_netdata
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - alpine-sdk 
+    - curl 
+    - zlib-dev 
+    - util-linux-dev 
+    - libmnl-dev 
+    - gcc
+    - make
+    - git
+    - autoconf
+    - automake
+    - pkgconfig
+    - logrotate
+    - nodejs
+    
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755
+     
+- name: Prepare Netdata build
+  shell: "git clone https://github.com/firehol/netdata.git --depth=1"
+  args:
+      chdir: /opt
+      creates: /opt/netdata
+
+- name: Buid and Install Netdata
+  shell: "./netdata-installer.sh --dont-wait --dont-start-it"
+  args:
+      chdir: /opt/netdata
+      creates: /usr/sbin/netdata
+
+- name: Install Netdata init.d
+  copy:
+      src: netdata.init.d
+      dest: /etc/init.d/netdata
+      mode: 0755  
+
+- name: Install Netdata conf.d
+  copy:
+      src: netdata.conf.d
+      dest: /etc/conf.d/netdata
+      mode: 0440
+      
+- name: Start Netdata
+  service:
+      name: netdata
+      state: started
+      enabled: true

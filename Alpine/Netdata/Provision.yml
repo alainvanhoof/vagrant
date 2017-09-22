@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-netdata-01
+  become: true
+  roles:
+    - { role: alpine_netdata, netdata_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...
