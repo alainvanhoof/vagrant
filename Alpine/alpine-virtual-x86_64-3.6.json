@@ -20,7 +20,7 @@
          "sys<enter><wait10>",
          "y<enter><wait10>",
          "reboot<enter>",
-         "<wait10><wait10><wait10><wait10>",
+         "<wait10><wait10><wait10><wait10><wait10><wait10>",
          "root<enter>",
          "vagrant<enter>",
          "apk add sudo<enter><wait5>",

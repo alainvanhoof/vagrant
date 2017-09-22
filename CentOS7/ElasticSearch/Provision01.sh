@@ -23,6 +23,8 @@ node.name: "es01"
 cluster.name: "esc01"
 network.host: _eth1:ipv4_
 path.repo: ["/backup"]
+http.cors.enabled: true
+http.cors.allow-origin: "*"
 EOF
 
 sed -i -e 's/-Xms2g/-Xms768m/' /etc/elasticsearch/jvm.options

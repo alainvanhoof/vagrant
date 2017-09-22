@@ -6,3 +6,7 @@ cluster.name: {{ es_cluster_name }}
 {% if es_unicast_host is defined %}
 discovery.zen.ping.unicast.hosts: ["{{ es_unicast_host }}"]
 {% endif %}
+{% if es_cors is defined %}
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+{% endif %}
