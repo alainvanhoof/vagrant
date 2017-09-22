@@ -3,6 +3,6 @@
 - hosts: dev-packetbeat-01
   become: true
   roles:
-    - { role: alpine_packetbeat, ship_addr: 10.0.0.11 }
+    - { role: alpine_packetbeat, ship_addr: 10.0.0.152 }
 
 ...
