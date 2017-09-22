@@ -12,7 +12,7 @@
       - libffi-dev
       - py2-pip
       - libffi
-      - py-cairo
+      - py2-cairo
       
 - name: Install Carbon, Whisper and Graphite-API via pip
   pip:

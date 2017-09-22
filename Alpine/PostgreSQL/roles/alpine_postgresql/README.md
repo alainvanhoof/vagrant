@@ -37,7 +37,7 @@ Create a cluster on dev-postgresql-01 and dev-postgresql-02 with a initial datab
 - hosts: dev-postgresql-01
   become: true
   roles:
-    - { role: alpine_postgresql, pg_primary: true, pg_standdy_addr: "IP or HOSTNAME of primary", pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
+    - { role: alpine_postgresql, pg_primary: true, pg_standdy_addr: "IP or HOSTNAME of standby", pg_db_name: test, pg_db_user: testuser, pg_db_pass: testpass }
 - hosts: dev-postgresql-02
   become: true
   roles:
