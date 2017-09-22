@@ -3,9 +3,11 @@
 - hosts: dev-host01
   become: true
   tasks:
-  - name: Install Curl
+  - name: update the apk cache
     apk: 
-      name: curl
-      state: present
+      update_cache: yes
+  - name: upgrade the packages
+    apk: 
+      upgrade: yes
 
 ...

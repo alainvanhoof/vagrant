@@ -1,15 +1,4 @@
 ---
-- hosts: debian8
+- hosts: debian9
   become: true
-  roles:
-    - postgresql
-    - confluence
-  tasks:
-  - name: Create PostgreSQL User
-    become_user: postgres
-    postgresql_user:
-      db: confluence
-      name: ConfluenceUser
-      password: ConfluencePassword
-      priv: "ALL"
 ...

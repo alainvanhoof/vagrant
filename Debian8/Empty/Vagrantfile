@@ -5,10 +5,10 @@ Vagrant.configure(2) do |config|
     vm.linked_clone = true
   end
 
-  config.vm.define "debian8" do |d1|
-    d1.vm.box = "debian/jessie64"
-    d1.vm.hostname = "debian8"
-    d1.vm.network "private_network", ip: "10.0.0.100", netmask: "255.255.255.0", virtualbox_intnet: "debian8_network"
+  config.vm.define "debian9" do |d1|
+    d1.vm.box = "debian/stretch64"
+    d1.vm.hostname = "debian9"
+    d1.vm.network "private_network", ip: "10.0.0.100", netmask: "255.255.255.0", virtualbox_intnet: "debian9_network"
     d1.vm.provision "ansible", playbook: "Provision.yml"
   end
 

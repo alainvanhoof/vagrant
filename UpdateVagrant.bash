@@ -1,5 +1,5 @@
 #!/bin/bash
-VA_VERSION=1.9.4
+VA_VERSION=2.0.0
 curl -O https://releases.hashicorp.com/vagrant/${VA_VERSION}/vagrant_${VA_VERSION}_x86_64.dmg
 hdiutil attach ./vagrant_${VA_VERSION}_x86_64.dmg
 sudo installer -pkg /Volumes/Vagrant/Vagrant.pkg -target /Volumes/Macintosh\ HD
