@@ -8,6 +8,6 @@
 - hosts: dev-es-02,dev-es-03,dev-es-04
   become: true
   roles:
-    - { role: alpine_elasticsearch, es_listen_addr: "{{ ansible_eth1.ipv4.address }}", es_unicast_host: 10.0.0.11 }
+    - { role: alpine_elasticsearch, es_listen_addr: "{{ ansible_eth1.ipv4.address }}", es_unicast_host: 10.0.0.150 }
 
 ...
