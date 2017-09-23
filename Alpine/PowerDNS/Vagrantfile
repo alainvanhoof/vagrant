@@ -1,6 +1,6 @@
-cluster = [ { :name => "dev-powerdns-01", :ip => "10.0.0.11" , :net => "powerdns.net"},
-            { :name => "dev-powerdns-02", :ip => "10.0.0.12" , :net => "powerdns.net"},
-            { :name => "dev-powerdns-03", :ip => "10.0.0.13" , :net => "powerdns.net"} ]
+cluster = [ { :name => "dev-powerdns-01", :ip => "10.0.0.250" , :net => "dev.net"},
+            { :name => "dev-powerdns-02", :ip => "10.0.0.251" , :net => "dev.net"},
+            { :name => "dev-powerdns-03", :ip => "10.0.0.252" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|

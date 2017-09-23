@@ -13,6 +13,13 @@
     state: present
   when: pdns_authoritive is defined
 
+- name: fix init script to enable guardian
+  lineinfile:
+    dest: /etc/init.d/pdns
+    regexp: 'command_args="${command_args:-} --guardian=no --daemon=no --write-pid=no $pdns_config"'
+    line: 'command_args="${command_args:-} --guardian=yes --daemon=no --write-pid=no $pdns_config"'
+  when: pdns_authoritive is defined
+
 - name: Install PowerDNS PostgreSQL backend
   apk:
     name: pdns-backend-pgsql
