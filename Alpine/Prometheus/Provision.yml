@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-prometheus-01
+  become: true
+  roles:
+    - { role: alpine_prometheus, prometheus_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...

@@ -1,0 +1,75 @@
+---
+# tasks file for alpine_prometheus
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: prometheus
+      fail_key: false
+      
+- name: Create user for Prometheus
+  command: adduser prometheus -DH -s /sbin/nologin -h /opt/prometheus-{{ prometheus_version}}.linux-amd64
+  when: not getent_passwd.prometheus
+           
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755
+     
+- name: Create Prometheus log file
+  file:
+     path: /var/log/prometheus.log
+     state: touch
+     owner: prometheus
+     group: prometheus
+     mode: 0600  
+     
+- name: Get Prometheus
+  unarchive:
+      src: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/prometheus-{{ prometheus_version }}.linux-amd64
+
+- name: Configure Prometheus
+  template: 
+      src: prometheus.yml.j2
+      dest: /opt/prometheus-{{ prometheus_version }}.linux-amd64/prometheus.yml
+      mode: 0644
+      
+- name: Let user own /opt/prometheus-{{ prometheus_version }}.linux-amd64
+  file:
+     dest: /opt/prometheus-{{ prometheus_version }}.linux-amd64
+     state: directory
+     owner: prometheus
+     group: prometheus
+     recurse: true 
+     
+- name: Install Prometheus init.d
+  template:
+      src: prometheus.init.d.j2
+      dest: /etc/init.d/prometheus
+      mode: 0755  
+
+- name: Install Prometheus conf.d
+  template:
+      src: prometheus.conf.d.j2
+      dest: /etc/conf.d/prometheus
+      mode: 0440
+      
+- name: Start Prometheus
+  service:
+      name: prometheus
+      state: started
+      enabled: true
+         

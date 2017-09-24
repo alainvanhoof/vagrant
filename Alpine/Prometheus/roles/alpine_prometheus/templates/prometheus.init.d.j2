@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+
+USER=prometheus
+GROUP=prometheus
+SERVICE="prometheus"
+COMMAND="/opt/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+CMD_ARGS="${PROMETHEUS_OPTS}"
+DIR="/opt/prometheus-{{ prometheus_version }}.linux-amd64"
+LOG_FILE="/var/log/prometheus.log"
+
+depend() {
+    need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting ${SERVICE}"
+    start-stop-daemon --background --start \
+    --make-pidfile --pidfile /run/${SERVICE}.pid \
+    --exec ${COMMAND} \
+    --user ${USER:-root} \
+    --group ${GROUP:-root} \
+    --chdir ${DIR} \
+    --stdout ${LOG_FILE} \
+    --stderr ${LOG_FILE} \
+    -- ${CMD_ARGS}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SERVICE}"
+    start-stop-daemon --stop --exec ${COMMAND} \
+    --pidfile /run/${SERVICE}.pid
+    eend $?
+}
