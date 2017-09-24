@@ -13,6 +13,6 @@
 - hosts: dev-redis-03,dev-redis-04
   become: true
   roles:
-    - { role: alpine_redis, redis_slaveof: 10.0.0.12, redis_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    - { role: alpine_redis, redis_slaveof: 10.0.0.171, redis_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 
 ...
