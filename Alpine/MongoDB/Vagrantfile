@@ -1,7 +1,7 @@
-cluster = [ { :name => "dev-mongodb-01", :ip => "10.0.0.11" , :net => "dev.net"},
-            { :name => "dev-mongodb-02", :ip => "10.0.0.12" , :net => "dev.net"}, 
-            { :name => "dev-mongodb-03", :ip => "10.0.0.13" , :net => "dev.net"},
-            { :name => "dev-mongodb-04", :ip => "10.0.0.14" , :net => "dev.net"} ]
+cluster = [ { :name => "dev-mongodb-01", :ip => "10.0.0.180" , :net => "dev.net"},
+            { :name => "dev-mongodb-02", :ip => "10.0.0.181" , :net => "dev.net"}, 
+            { :name => "dev-mongodb-03", :ip => "10.0.0.182" , :net => "dev.net"},
+            { :name => "dev-mongodb-04", :ip => "10.0.0.183" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|

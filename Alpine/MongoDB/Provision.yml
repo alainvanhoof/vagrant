@@ -13,6 +13,6 @@
 - hosts: dev-mongodb-03,dev-mongodb-04
   become: true
   roles:
-    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_secondary: rs0, mongodb_primary_addr: "10.0.0.12"}
+    - { role: alpine_mongodb, mongodb_listen_addr: "{{ ansible_eth1.ipv4.address }}", mongodb_secondary: rs0, mongodb_primary_addr: "10.0.0.181"}
 
 ...
