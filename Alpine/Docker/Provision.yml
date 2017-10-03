@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-docker-*
+  become: true
+  roles:
+    - { role: alpine_docker, docker_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...

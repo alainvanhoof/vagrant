@@ -1,0 +1,23 @@
+---
+# tasks file for alpine_docker
+
+- name: Install Docker
+  apk:
+    name: "docker"
+    state: present
+    update_cache: yes
+    
+- name: Set Docker Listen Address
+  lineinfile:
+    dest: "/etc/conf.d/docker"
+    regexp: '.*DOCKER_OPTS=.*'
+    line: 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://{{ docker_listen_addr }}"'
+  notify: Restart docker
+  when: docker_listen_addr is defined
+      
+- name: Start Docker
+  service:
+    name: docker
+    state: started
+    enabled: true
+
