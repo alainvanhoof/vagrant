@@ -65,7 +65,7 @@ systemctl start sensu-client
 
 # Install uchiwa dashboard
 
-yum -y install http://dl.bintray.com/palourde/uchiwa/uchiwa-0.18.2-1.x86_64.rpm
+yum -y install http://dl.bintray.com/palourde/uchiwa/uchiwa-0.25.3-1.x86_64.rpm
 
 cat > /etc/sensu/uchiwa.json << EOF
 {
