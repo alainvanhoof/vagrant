@@ -34,14 +34,14 @@ Create a Master/Slave database testdb on dev-mariadb-01 (master) and dev-mariadb
   roles:
     - { role: alpine_mariadb, mariadb_master: yes, mariadb_name: testdb, mariadb_user: user, mariadb_pass: pass, mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
     
-- hosts: dev-postgresql-02
+- hosts: dev-mariadb-02
   become: true
   roles:
     - { role: alpine_mariadb, mariadb_slave: yes, mariadb_name: testdb, mariadb_master_addr: '10.0.0.12', mariadb_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
 ```
 Create a standalone MariaDB on dev-mariadb-03 listing only on localhost
 ```yaml
-- hosts: dev-postgresql-03
+- hosts: dev-mariadb-03
   become: true
   roles:
     - { role: alpine_mariadb, mariadb_listen_addr: "127.0.0.1" }

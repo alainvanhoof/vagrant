@@ -9,7 +9,7 @@
   with_items:
       - openjdk8-jre
       - git
-      - tar
+      - unzip
 
 - name: Check if user excists
   getent: 
