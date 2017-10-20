@@ -1,6 +1,6 @@
 ---
 
-- hosts: dev-icinga01
+- hosts: dev-icinga-01
   become: true
   roles:
     - { role: alpine_nginx, php5: true }

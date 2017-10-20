@@ -1,6 +1,6 @@
-cluster = [ { :name => "dev-icinga01", :ip => "10.0.0.150", :net => "dev.net" },
-            { :name => "dev-icinga02", :ip => "10.0.0.151", :net => "dev.net" },
-            { :name => "dev-icinga03", :ip => "10.0.0.152", :net => "dev.net" } ]
+cluster = [ { :name => "dev-icinga-01", :ip => "10.0.0.100", :net => "dev.net" },
+            { :name => "dev-icinga-02", :ip => "10.0.0.101", :net => "dev.net" },
+            { :name => "dev-icinga-03", :ip => "10.0.0.102", :net => "dev.net" } ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|

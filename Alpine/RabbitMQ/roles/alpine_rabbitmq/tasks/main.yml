@@ -1,0 +1,14 @@
+---
+# tasks file for alpine_rabbitmq
+
+- name: Enable edge testing repository
+  replace:
+    dest: /etc/apk/repositories
+    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/community"
+    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/testing"
+
+- name: Install RabbitMQ package
+  apk:
+    name: rabbitmq-server
+    state: present
+    update_cache: yes
