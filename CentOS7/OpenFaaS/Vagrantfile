@@ -1,0 +1,34 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 4096
+    vm.linked_clone = true
+  end
+
+  config.vm.define "docker01" do |d1|
+   d1.vm.box = "centos/7"
+   d1.vm.hostname = "docker01"
+   d1.vm.network "private_network", ip: "10.0.0.201", netmask: "255.255.255.0", virtualbox_intnet: "docker_network"
+   d1.vm.provision "shell", path: "ProvisionDocker.sh"
+   d1.vm.network "forwarded_port", guest: 8080, host: 8080
+  end
+
+  config.vm.define "docker02" do |d2|
+   d2.vm.box = "centos/7"
+   d2.vm.hostname = "docker02"
+   d2.vm.network "private_network", ip: "10.0.0.202", netmask: "255.255.255.0", virtualbox_intnet: "docker_network"
+   d2.vm.provision "shell", path: "ProvisionDocker.sh"
+  end
+
+  config.vm.define "grafana01" do |g1|
+   g1.vm.box = "centos/7"
+   g1.vm.hostname = "grafana03"
+   g1.vm.network "private_network", ip: "10.0.0.203", netmask: "255.255.255.0", virtualbox_intnet: "docker_network"
+   g1.vm.provision "shell", path: "ProvisionGrafana.sh"
+   g1.vm.network "forwarded_port", guest: 3000, host: 3000
+   g1.vm.provider 'virtualbox' do |vb|
+          vb.memory = 2048
+      end
+  end
+
+end
