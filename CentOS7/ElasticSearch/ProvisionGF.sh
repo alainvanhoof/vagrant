@@ -14,10 +14,10 @@ enabled=1
 gpgcheck=0
 EOF
 
-cat > /etc/yum.repos.d/elasticsearch5.repo << EOF
-[elasticsearch-5.x]
-name=Elasticsearch repository for 5.x packages
-baseurl=https://artifacts.elastic.co/packages/5.x/yum
+cat > /etc/yum.repos.d/elasticsearch.repo << EOF
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://artifacts.elastic.co/packages/6.x/yum
 gpgcheck=0
 enabled=1
 autorefresh=1

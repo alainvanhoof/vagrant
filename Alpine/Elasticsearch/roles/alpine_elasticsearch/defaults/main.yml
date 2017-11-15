@@ -1,6 +1,6 @@
 ---
 # defaults file for alpine_elasticsearch
 
-elasticsearch_version: 5.6.1
+elasticsearch_version: 6.0.0
 es_listen_addr: 127.0.0.1
 es_cluster_name: cluster01
