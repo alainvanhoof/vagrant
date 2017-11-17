@@ -1,0 +1,13 @@
+---
+
+- hosts: dev-saltstack-01
+  become: true
+  roles:
+    - { role: alpine_saltstack, master: true, salt_listen_addr: "{{ ansible_eth1.ipv4.address }}", salt: "{{ salt_listen_addr }}" }
+
+- hosts: dev-saltstack-02,dev-saltstack-03
+  become: true
+  roles:
+    - { role: alpine_saltstack, salt: "10.0.0.211" }
+
+...

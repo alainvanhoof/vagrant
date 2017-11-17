@@ -1,0 +1,7 @@
+---
+# handlers file for alpine_saltstack
+
+- name: Restart salt-master
+  service:
+    name: salt-master
+    state: restarted

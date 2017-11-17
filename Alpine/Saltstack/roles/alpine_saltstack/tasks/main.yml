@@ -1,0 +1,41 @@
+---
+# tasks file for alpine_saltstack
+
+- name: Install salt minion
+  apk:
+    name: salt-minion
+    state: present
+    update_cache: yes
+    
+- name: Set the salt-master in /etc/hosts
+  lineinfile:
+      dest: /etc/hosts
+      line: '{{ salt }} salt'
+
+- name: Install salt master
+  apk:
+    name: salt-master
+    state: present
+    update_cache: yes
+  when: master is defined
+
+- name: Change salt master listen IP
+  lineinfile:
+    dest: '/etc/salt/master'
+    regexp: '.*interface:.*'
+    line: 'interface: {{ salt_listen_addr }}'
+  when: master is defined
+  notify: Restart salt-master
+  
+- name: Start salt-minion
+  service:
+    name: salt-minion
+    state: started
+    enabled: true
+    
+- name: Start salt-master
+  service:
+    name: salt-master
+    state: started
+    enabled: true
+  when: master is defined
