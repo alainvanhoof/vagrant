@@ -31,6 +31,7 @@
     name: "{{ pg_repl_user }}"
     password: "{{ pg_repl_pass }}"
     role_attr_flags: REPLICATION
+    encrypted: true
   when: pg_primary is defined
 
 - name: Create PostgreSQL Database {{ pg_db_name }} with encoding {{ pg_db_encoding }}
@@ -45,6 +46,7 @@
     name: "{{ pg_db_user }}"
     password: "{{ pg_db_pass }}"
     priv: "{{ pg_db_priv }}"
+    encrypted: true
   when: pg_standby is undefined
 
 - name: Create archive dir
@@ -126,7 +128,7 @@
     - standby_active.stat.isreg is undefined
 
 - name: Sync data directory from primary
-  command: su - postgres -c 'PGPASSWORD=repl pg_basebackup -h {{ pg_primary_addr }} -D {{ pg_data_dir }} -U repl -w -v -P --xlog-method=stream -R'
+  command: su - postgres -c 'PGPASSWORD=repl pg_basebackup -h {{ pg_primary_addr }} -D {{ pg_data_dir }} -U repl -Fp -Xs -c fast -v -P -R'
   when: 
     - pg_standby is defined
     - standby_active.stat.isreg is undefined
