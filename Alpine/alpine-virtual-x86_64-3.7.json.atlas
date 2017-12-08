@@ -1,0 +1,92 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+         "root<enter>",
+         "setup-alpine<enter>",
+         "<enter><wait>",
+         "<enter><wait>",
+         "<enter><wait>",
+         "<enter><wait>",
+         "<enter><wait5>",
+         "vagrant<enter><wait>",
+         "vagrant<enter><wait>",
+         "<enter><wait5>",
+         "<enter><wait5>",
+         "1<enter>",
+         "<enter>",
+         "<enter>",
+         "sda<enter>",
+         "sys<enter><wait10>",
+         "y<enter><wait10>",
+         "reboot<enter>",
+         "<wait10><wait10><wait10><wait10>",
+         "root<enter>",
+         "vagrant<enter>",
+         "apk add sudo<enter><wait5>",
+         "adduser vagrant<enter><wait>",
+         "vagrant<enter>",
+         "vagrant<enter>",
+         "echo 'Defaults env_reset<enter>",
+         "vagrant ALL=(ALL) ALL<enter>",
+         "vagrant ALL=NOPASSWD: ALL<enter>",
+         "' > /etc/sudoers.d/vagrant<enter>"
+      ],
+      "boot_wait": "25s",
+      "disk_size": 4096,
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Linux26_64",
+      "iso_checksum": "5a4b2588afd32e7024dd61d9558b77b03a4f3189cb4c9fc05e9e944fb780acdd",
+      "iso_checksum_type": "sha256",
+      "iso_url": "https://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-virt-3.7.0-x86_64.iso",
+      "output_directory": "Alpine",
+      "shutdown_command": "sudo poweroff",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10m",
+      "type": "virtualbox-iso",
+      "headless" : true,
+      "hard_drive_interface": "sata",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "512"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "1"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "Alpine"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "/bin/sh '{{.Path}}'",
+      "scripts": [
+      "Provision.sh"
+      ],
+      "type": "shell"
+    }
+  ],
+  "post-processors": [
+   [
+    {
+      "output": "alpine-virtual-x86_64-3.7.box",
+      "type": "vagrant",
+      "keep_input_artifact": false
+    },
+    {
+    "type": "vagrant-cloud",
+    "box_tag": "alainvanhoof/alpine-virtual-x86_64-3.7",
+    "version": "3.7.0"
+    }
+   ]
+  ]
+}
