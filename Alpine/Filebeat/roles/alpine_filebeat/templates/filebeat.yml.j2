@@ -7,7 +7,7 @@ logging.files:
   keepfiles: 7
 
 filebeat.prospectors:
-- input_type: log
+- type: log
   paths:
     - /var/log/*.log
     - /var/log/messages

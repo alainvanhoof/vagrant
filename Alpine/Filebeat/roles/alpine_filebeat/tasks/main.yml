@@ -9,6 +9,23 @@
   with_items:
       - ca-certificates
       - tar
+
+- name: Get the key for glibc 
+  get_url:
+    url: https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+    dest: /etc/apk/keys/sgerrand.rsa.pub
+    mode: 0440
+
+- name: Get glibc 
+  get_url:
+    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.26-r0/glibc-2.26-r0.apk
+    dest: /tmp/glibc-2.26-r0.apk
+    mode: 0440
+
+- name: Install packages glibc
+  apk:
+    name: /tmp/glibc-2.26-r0.apk
+    state: present
       
 - name: Create /opt
   file:

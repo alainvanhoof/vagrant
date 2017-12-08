@@ -1,6 +1,6 @@
 ---
 # defaults file for alpine_filebeat
 
-filebeat_version: 5.6.1-linux-x86_64
+filebeat_version: 6.0.1-linux-x86_64
 ship_addr: 127.0.0.1
 ship_port: 9200
