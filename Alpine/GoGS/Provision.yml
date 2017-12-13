@@ -4,6 +4,6 @@
   become: true
   roles:
     - { role: alpine_postgresql, pg_listen_addr: localhost, pg_db_name: gogs, pg_db_user: gogsuser, pg_db_pass: gogspass }
-    - { role: alpine_gogs, gogs_version: 0.11.4 }
+    - { role: alpine_gogs }
 
 ...
