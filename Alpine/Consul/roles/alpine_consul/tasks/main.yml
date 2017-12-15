@@ -1,6 +1,14 @@
 ---
 # tasks file for alpine_consul
 
+- name: Install packages needed 
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+      - unzip
+
 - name: Check if user excists
   getent: 
       database: passwd
@@ -34,12 +42,13 @@
 
 - name: Get consul 
   unarchive:
-    src: https://releases.hashicorp.com/consul/0.9.2/consul_0.9.2_linux_amd64.zip
+    src: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version}}_linux_amd64.zip
     dest: /opt/consul/bin
     owner: consul
     group: consul
     validate_certs: False
     remote_src: True
+    creates: /opt/consul/bin/consul
 
 - name: Let user own consul directories
   file:
