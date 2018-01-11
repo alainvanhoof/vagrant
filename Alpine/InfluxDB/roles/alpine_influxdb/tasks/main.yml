@@ -1,0 +1,60 @@
+---
+# tasks file for alpine_influxdb
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+
+- name: Get the key for glibc 
+  get_url:
+    url: https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+    dest: /etc/apk/keys/sgerrand.rsa.pub
+    mode: 0440
+
+- name: Get glibc 
+  get_url:
+    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
+    dest: /tmp/glibc-2.25-r0.apk
+    mode: 0440
+
+- name: Install packages glibc
+  apk:
+    name: /tmp/glibc-2.25-r0.apk
+    state: present
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+
+- name: Get InfluxDB 
+  unarchive:
+      src: https://dl.influxdata.com/influxdb/releases/influxdb-1.4.2_linux_amd64.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/influxdb
+
+#- name: Install InfluxDB  init.d
+#  template:
+#      src: influxdb.init.d.j2
+#      dest: /etc/init.d/influxdb
+#      mode: 0755  
+#
+#- name: Install InfluxDB  conf.d
+#  copy:
+#      src: influxdb.conf.d
+#      dest: /etc/conf.d/influxdb
+#      mode: 0440
+#      
+#- name: Start InfluxDB 
+#  service:
+#      name: influxdb
+#      state: started
+#      enabled: true
+         
