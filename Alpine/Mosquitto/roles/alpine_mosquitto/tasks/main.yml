@@ -1,0 +1,24 @@
+---
+# tasks file for alpine_mosquitto
+
+- name: Install Mosquitto
+  apk:
+    name: "mosquitto"
+    state: present
+    update_cache: yes
+    
+- name: Set Mosquitto Listen Address
+  lineinfile:
+    dest: "/etc/mosquitto/mosquitto.conf"
+    regexp: '^bind_address'
+    insertafter: '^#bind_address'
+    line: 'bind_address {{ mosquitto_listen_addr }}'
+  notify: Restart mosquitto
+  when: mosquitto_listen_addr is defined
+      
+- name: Start Mosquitto
+  service:
+    name: mosquitto
+    state: started
+    enabled: true
+

@@ -1,0 +1,13 @@
+---
+
+- hosts: dev-mosquitto-01
+  become: true
+  roles:
+    - { role: alpine_mosquitto, mosquitto_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    
+- hosts: dev-mosquitto-01
+  become: true
+  roles:
+    - { role: alpine_mosquitto, mosquitto_connect_addr: 10.0.0.110, mosquitto_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...

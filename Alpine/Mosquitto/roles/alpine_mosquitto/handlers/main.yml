@@ -1,0 +1,7 @@
+---
+# handlers file for alpine_mosquitto
+
+- name: Restart mosquitto
+  service:
+    name: mosquitto
+    state: restarted
