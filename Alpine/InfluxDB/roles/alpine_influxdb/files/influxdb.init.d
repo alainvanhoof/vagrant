@@ -3,9 +3,8 @@
 USER=root
 GROUP=root
 SERVICE="influxdb"
-COMMAND="/opt/influxdb/influxdb"
+COMMAND="/usr/bin/influxd"
 CMD_ARGS="${INFLUXDB_OPTS}"
-DIR="/opt/influxdb"
 
 depend() {
     need net
@@ -19,7 +18,6 @@ start() {
     --exec ${COMMAND} \
     --user ${USER:-root} \
     --group ${GROUP:-root} \
-    --chdir ${DIR} \
     -- ${CMD_ARGS}
     eend $?
 }

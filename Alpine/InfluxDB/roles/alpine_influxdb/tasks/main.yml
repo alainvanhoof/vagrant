@@ -27,34 +27,30 @@
     name: /tmp/glibc-2.25-r0.apk
     state: present
 
-- name: Create /opt
-  file:
-     dest: /opt
-     state: directory
-     mode: 0755  
-
 - name: Get InfluxDB 
   unarchive:
       src: https://dl.influxdata.com/influxdb/releases/influxdb-1.4.2_linux_amd64.tar.gz
-      dest: /opt
+      dest: /
+      extra_opts: "--strip-components=2"
       remote_src: True
-      creates: /opt/influxdb
+      creates: /usr/bin/influxd
 
-#- name: Install InfluxDB  init.d
-#  template:
-#      src: influxdb.init.d.j2
-#      dest: /etc/init.d/influxdb
-#      mode: 0755  
-#
-#- name: Install InfluxDB  conf.d
-#  copy:
-#      src: influxdb.conf.d
-#      dest: /etc/conf.d/influxdb
-#      mode: 0440
-#      
-#- name: Start InfluxDB 
-#  service:
-#      name: influxdb
-#      state: started
-#      enabled: true
+- name: Install InfluxDB  init.d
+  copy:
+      src: influxdb.init.d
+      dest: /etc/init.d/influxdb
+      mode: 0755  
+
+- name: Install InfluxDB  conf.d
+  copy:
+      src: influxdb.conf.d
+      dest: /etc/conf.d/influxdb
+      mode: 0440
+      
+- name: Start InfluxDB 
+  service:
+      name: influxdb
+      state: started
+      enabled: true
          
+...
