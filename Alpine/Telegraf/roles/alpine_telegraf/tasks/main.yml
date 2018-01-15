@@ -36,25 +36,27 @@
 - name: Get Telegraf
   unarchive:
       src: https://dl.influxdata.com/telegraf/releases/telegraf-1.5.1_linux_amd64.tar.gz
-      dest: /opt
+      dest: /
+      extra_opts: "--strip-components=2"
       remote_src: True
       creates: /opt/telegraf
 
-#- name: Install InfluxDB  init.d
-#  template:
-#      src: influxdb.init.d.j2
-#      dest: /etc/init.d/influxdb
-#      mode: 0755  
-#
-#- name: Install InfluxDB  conf.d
-#  copy:
-#      src: influxdb.conf.d
-#      dest: /etc/conf.d/influxdb
-#      mode: 0440
-#      
-#- name: Start InfluxDB 
-#  service:
-#      name: influxdb
-#      state: started
-#      enabled: true
+- name: Install Telegraf init.d
+  copy:
+      src: telegraf.init.d
+      dest: /etc/init.d/telegraf
+      mode: 0755  
+
+- name: Install Telegraf conf.d
+  copy:
+      src: telegraf.conf.d
+      dest: /etc/conf.d/telegraf
+      mode: 0440
+      
+- name: Start Telegraf 
+  service:
+      name: telegraf
+      state: started
+      enabled: true
          
+...
