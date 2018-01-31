@@ -3,7 +3,7 @@
 USER=root
 GROUP=root
 SERVICE="telegraf"
-COMMAND="/usr/bin/telegraf"
+COMMAND="/opt/telegraf"
 CMD_ARGS="${TELEGRAF_OPTS}"
 
 depend() {
@@ -18,7 +18,7 @@ start() {
     --exec ${COMMAND} \
     --user ${USER:-root} \
     --group ${GROUP:-root} \
-    -- ${CMD_ARGS} >>/dev/null 2>>/var/log/telegraf/telegraf.log
+    -- ${CMD_ARGS} >>/dev/null 2>>/var/log/telegraf.log
     eend $?
 }
 

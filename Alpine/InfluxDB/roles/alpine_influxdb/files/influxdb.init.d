@@ -3,7 +3,7 @@
 USER=root
 GROUP=root
 SERVICE="influxdb"
-COMMAND="/usr/bin/influxd"
+COMMAND="/opt/influxd"
 CMD_ARGS="${INFLUXDB_OPTS}"
 
 depend() {
@@ -18,7 +18,7 @@ start() {
     --exec ${COMMAND} \
     --user ${USER:-root} \
     --group ${GROUP:-root} \
-    -- ${CMD_ARGS}  >>/dev/null 2>>/var/log/influxdb/influxdb.log 
+    -- ${CMD_ARGS}  >>/dev/null 2>>/var/log/influxdb.log 
     eend $?
 }
 

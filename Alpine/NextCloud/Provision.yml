@@ -1,0 +1,10 @@
+---
+
+- hosts: dev-nextcloud01
+  become: true
+  roles:
+    - { role: alpine_postgresql, pg_listen_addr: localhost, pg_db_name: nextcloud, pg_db_user: nextcloud, pg_db_pass: nextcloud }
+    - { role: alpine_nginx, php7: true }
+    #- { role: alpine_nextcloud }
+
+...
