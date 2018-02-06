@@ -1,2 +1,4 @@
 ---
 # defaults file for alpine_rabbitmq
+
+rabbitmq_cookie: "00112233445566778899AABBCCDDEEFF"

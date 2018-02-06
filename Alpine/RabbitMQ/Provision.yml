@@ -1,8 +1,8 @@
 ---
 
-- hosts: dev-rabbitmq-01
+- hosts: dev-rabbitmq-01,dev-rabbitmq-02,dev-rabbitmq-03
   become: true
   roles:
-    - { role: alpine_rabbitmq, rabbitmq_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+    - { role: alpine_rabbitmq, rabbitmq_listen_addr: "{{ ansible_eth1.ipv4.address }}", rabbitmq_cookie: "ABCDEF" }
 
 ...

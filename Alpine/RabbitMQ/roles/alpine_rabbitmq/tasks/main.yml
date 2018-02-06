@@ -12,3 +12,27 @@
     name: rabbitmq-server
     state: present
     update_cache: yes
+    
+- name: Create /etc/rabbitmq
+  file:
+     dest: /etc/rabbitmq
+     state: directory
+     mode: 0755
+     
+- name: Create erlang_cookie
+  lineinfile:
+     path: /usr/lib/rabbitmq/.erlang.cookie
+     line: '{{ rabbitmq_cookie }}'
+     state: present
+     create: true
+     owner: rabbitmq
+     group: rabbitmq
+     mode: 0600
+
+- name: Start RabbitMQ
+  service:
+      name: rabbitmq-server
+      state: started
+      enabled: true
+         
+...   
