@@ -9,6 +9,7 @@
   with_items:
       - openjdk8-jre
       - tar
+      - coreutils
 
 - name: Check if user excists
   getent: 

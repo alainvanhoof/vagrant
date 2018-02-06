@@ -1,6 +1,6 @@
 ---
 # defaults file for alpine_packetbeat
 
-packetbeat_version: 6.1.0-linux-x86_64
+packetbeat_version: 6.2.0-linux-x86_64
 ship_addr: 127.0.0.1
 ship_port: 9200
