@@ -1,6 +1,7 @@
 #!/bin/bash
-VB_VERSION=5.1.22
-VB_DMG=VirtualBox-5.1.22-115126-OSX.dmg
+VB_VERSION=5.2.6
+VB_RELEASE=120293
+VB_DMG=VirtualBox-${VB_VERSION}-${VB_RELEASE}-OSX.dmg
 curl -O http://download.virtualbox.org/virtualbox/${VB_VERSION}/${VB_DMG}
 hdiutil attach ./${VB_DMG}
 sudo installer -pkg /Volumes/VirtualBox/VirtualBox.pkg -target /Volumes/Macintosh\ HD
