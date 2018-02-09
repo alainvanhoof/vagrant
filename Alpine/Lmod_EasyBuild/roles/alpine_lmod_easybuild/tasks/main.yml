@@ -1,0 +1,47 @@
+---
+# tasks file for alpine_lmod_easybuild
+
+- name: Install (LUA) packages needed
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+      - tcl
+      - lua
+      - lua-posix
+      - lua-filesystem
+      - lua-dev
+      - coreutils
+      - procps
+      - alpine-sdk
+      - py2-pip
+      
+- name: Create /opt/apps
+  file:
+     dest: /opt/apps
+     state: directory
+     mode: 0755  
+         
+- name: Get Lmod
+  unarchive:
+      src: https://github.com/TACC/Lmod/archive/{{ Lmod_version }}.tar.gz
+      dest: /root
+      remote_src: True
+      creates: /root/Lmod-{{ Lmod_version }}
+
+- name: Build and Install Lmod
+  shell: "./configure --prefix=/opt/apps && make install"
+  args:
+      chdir: /root/Lmod-{{ Lmod_version }}
+      creates: /opt/apps/lmod/
+     
+- name: Link the profile
+  file:
+      src: /opt/apps/lmod/lmod/init/profile
+      dest: /etc/profile.d/z00_lmod.sh
+      state: link
+
+- name: Install EasyBuild
+  pip:
+      name: easybuild
