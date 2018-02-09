@@ -18,13 +18,13 @@
 
 - name: Get glibc 
   get_url:
-    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
-    dest: /tmp/glibc-2.25-r0.apk
+    url: https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk
+    dest: /tmp/glibc-2.27-r0.apk
     mode: 0440
 
 - name: Install packages glibc
   apk:
-    name: /tmp/glibc-2.25-r0.apk
+    name: /tmp/glibc-2.27-r0.apk
     state: present
      
 - name: Create /opt
