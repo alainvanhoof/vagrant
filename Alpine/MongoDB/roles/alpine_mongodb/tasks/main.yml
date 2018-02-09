@@ -1,18 +1,6 @@
 ---
 # tasks file for alpine_mongodb
 
-- name: Enable edge community repository
-  replace:
-    dest: /etc/apk/repositories
-    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/community"
-    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/community"
-
-- name: Enable edge main repository
-  replace:
-    dest: /etc/apk/repositories
-    regexp: "#http://dl-cdn.alpinelinux.org/alpine/edge/main"
-    replace: "http://dl-cdn.alpinelinux.org/alpine/edge/main"
-
 - name: Install MongoDB package
   apk:
     name: mongodb

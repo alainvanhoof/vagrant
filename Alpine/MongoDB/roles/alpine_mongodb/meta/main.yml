@@ -1,6 +1,6 @@
 galaxy_info:
   author: Alain van Hoof
-  description: Nginx for Alpine Linux
+  description: MongoDB for Alpine Linux
   license: license (GPLv2, CC-BY, etc)
   min_ansible_version: 2.0
   platforms:
