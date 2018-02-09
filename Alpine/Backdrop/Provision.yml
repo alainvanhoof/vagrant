@@ -1,0 +1,9 @@
+---
+
+- hosts: dev-backdrop-01
+  become: true
+  roles:
+    - { role: alpine_mariadb, mariadb_listen_addr: 127.0.0.1, mariadb_name: backdrop, mariadb_user: backdrop_user, mariadb_pass: backdrop_pass }
+    - { role: alpine_nginx, php5: yes }
+    - { role: alpine_backdrop }
+...
