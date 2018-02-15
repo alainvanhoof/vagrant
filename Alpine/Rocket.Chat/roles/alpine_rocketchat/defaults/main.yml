@@ -4,6 +4,6 @@
 rocketchat_url_name: localhost
 rocketchat_url_port: 3000
 rocketchat_listen_addr: 127.0.0.1
-rocketchat_listen_port: {{ rocketchat_url_port }}
+rocketchat_listen_port: "{{ rocketchat_url_port }}"
 rocketchat_mongodb_addr: 127.0.0.1
 rocketchat_mondodb_port: 27017

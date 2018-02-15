@@ -15,6 +15,7 @@
       - php5-xml
       - php5-dom
       - php5-zip
+      - php5-openssl
 
 - name: Download and extract Backdrop
   unarchive:
@@ -22,3 +23,4 @@
       dest: /var/www/
       remote_src: True
       creates: /var/www/backdrop
+      

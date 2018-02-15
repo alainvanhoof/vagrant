@@ -1,15 +1,9 @@
 ---
 # tasks file for alpine_rocketchat
 
-- name: Enable edge 3.3 community repository
-  lineinfile:
-    dest: /etc/apk/repositories
-    line: "http://dl-cdn.alpinelinux.org/alpine/v3.3/main"
-
-
-- name: Install NodeJS (version 4) package
+- name: Install NodeJS 
   apk:
-    name: "nodejs<5.0.0"
+    name: nodejs
     state: present
     update_cache: yes
     
@@ -62,11 +56,12 @@
    
 - name: Download and extract RocketChat
   unarchive:
-     src: https://rocket.chat/releases/latest/download
+     src: https://github.com/RocketChat/Rocket.Chat.Electron/archive/2.10.5.tar.gz
      dest: /opt/rocketchat
      remote_src: True
      validate_certs: False
-     creates: /opt/rocketchat/bundle 
+     extra_opts: "--strip-components=1"
+     creates: /opt/rocketchat/bundle
 
 - name: Install RocketChat using nmp
   npm:
