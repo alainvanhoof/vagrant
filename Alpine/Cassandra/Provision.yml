@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-cassandra-*
+  become: true
+  roles:
+    - { role: alpine_cassandra, cassandra_listen_addr: "{{ ansible_eth1.ipv4.address }}", cassandra_seeds: "10.0.0.120,10.0.0.121" }
+
+...

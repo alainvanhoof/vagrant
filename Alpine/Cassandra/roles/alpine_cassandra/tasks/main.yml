@@ -1,0 +1,95 @@
+---
+# tasks file for alpine_cassandra
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+      - openjdk8-jre
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: cassandra
+      fail_key: false
+      
+- name: Create user for Cassandra
+  command: adduser cassandra -DH -s /sbin/nologin -h /opt/apache-cassandra-{{ cassandra_version}}
+  when: not getent_passwd.cassandra     
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755
+     
+- name: Create /var/lib/cassandra/
+  file:
+     dest: /var/lib/cassandra/{{ item }}
+     owner: cassandra
+     group: cassandra
+     state: directory
+     mode: 0700
+  with_items:
+     - data
+     - commitlog
+     - saved_caches
+
+- name: Create /var/log/cassandra.log
+  file:
+     dest: /var/log/cassandra.log
+     owner: cassandra
+     group: cassandra
+     state: touch
+     mode: 0700
+
+- name: Create /run/cassandra/
+  file:
+     dest: /run/cassandra
+     owner: cassandra
+     group: cassandra
+     state: directory
+     mode: 0700
+
+- name: Get Cassandra
+  unarchive:
+      src: http://artfiles.org/apache.org/cassandra/{{ cassandra_version }}/apache-cassandra-{{ cassandra_version }}-bin.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/apache-cassandra-{{ cassandra_version }}
+
+- name: Configure Cassandra
+  template: 
+      src: cassandra.yaml.j2
+      dest: /opt/apache-cassandra-{{ cassandra_version }}/conf/cassandra.yaml
+      mode: 0644
+      
+- name: Let user own /opt/apache-cassandra-{{ cassandra_version }}
+  file:
+     dest: /opt/apache-cassandra-{{ cassandra_version }}
+     state: directory
+     owner: cassandra
+     group: cassandra
+     recurse: true 
+     
+- name: Install Cassandra init.d
+  template:
+      src: cassandra.init.d.j2
+      dest: /etc/init.d/cassandra
+      mode: 0755  
+
+- name: Install Cassandra conf.d
+  template:
+      src: cassandra.conf.d.j2
+      dest: /etc/conf.d/cassandra
+      mode: 0440
+      
+- name: Start Cassandra
+  service:
+      name: cassandra
+      state: started
+      enabled: true

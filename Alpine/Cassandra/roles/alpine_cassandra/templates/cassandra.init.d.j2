@@ -1,0 +1,34 @@
+#!/sbin/openrc-run
+
+USER=cassandra
+GROUP=cassandra
+SERVICE="cassandra"
+COMMAND="/opt/apache-cassandra-{{ cassandra_version }}/bin/cassandra"
+CMD_ARGS="${CASSANDRA_OPTS}"
+DIR="/opt/apache-cassandra-{{ cassandra_version }}"
+LOG_FILE="/var/log/cassandra.log"
+
+depend() {
+    need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting ${SERVICE}"
+    start-stop-daemon --background --start \
+    --exec ${COMMAND} \
+    --user ${USER:-root} \
+    --group ${GROUP:-root} \
+    --chdir ${DIR} \
+    --stdout ${LOG_FILE} \
+    --stderr ${LOG_FILE} \
+    -- ${CMD_ARGS}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SERVICE}"
+    start-stop-daemon --stop --exec ${COMMAND} \
+    --pidfile /run/${SERVICE}/${SERVICE}.pid
+    eend $?
+}

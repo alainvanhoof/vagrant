@@ -1,0 +1,6 @@
+---
+# defaults file for alpine_cassandra
+
+cassandra_version: 3.11.2
+
+...
