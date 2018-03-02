@@ -1,0 +1,2 @@
+GRAPHITEWEB_OPTS="wsgi --workers=4 --bind=127.0.0.1:8080 --log-file=/var/log/graphite-web.log --preload --pythonpath=/opt/graphite/webapp/graphite"
+GRAPHITEWEB_ENV="env PYTHONPATH=/opt/graphite/webapp"

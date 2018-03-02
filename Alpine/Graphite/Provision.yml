@@ -3,6 +3,7 @@
 - hosts: dev-graphite-01
   become: true
   roles:
+    - { role: alpine_nginx}
     - { role: alpine_graphite }
 
 ...

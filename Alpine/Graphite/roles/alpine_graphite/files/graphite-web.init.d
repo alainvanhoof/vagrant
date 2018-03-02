@@ -1,9 +1,11 @@
 #!/sbin/openrc-run
 
 USER=root
-SERVICE="graphite-api"
-COMMAND="gunicorn"
-CMD_ARGS=${GRAPHITEAPI_OPTS}
+GROUP=root
+SERVICE="graphite-web"
+COMMAND="/usr/bin/gunicorn"
+CMD_ARGS=${GRAPHITEWEB_OPTS}
+CMD_ENV="${GRAPHITEWEB_ENV}"
 DIR="/opt/graphite"
 
 depend() {
@@ -15,8 +17,9 @@ start() {
     ebegin "Starting ${SERVICE}"
     start-stop-daemon --background --start \
     --make-pidfile --pidfile /run/${SERVICE}.pid \
-    --exec ${COMMAND} \
+    --exec ${CMD_ENV} ${COMMAND} \
     --user ${USER:-root} \
+    --group ${GROUP:-root} \
     --chdir ${DIR} \
     -- ${CMD_ARGS}
     eend $?

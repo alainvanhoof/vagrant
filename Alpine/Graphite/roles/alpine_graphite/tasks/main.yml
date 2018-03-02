@@ -14,14 +14,21 @@
       - libffi
       - py2-cairo
       
-- name: Install Carbon, Whisper and Graphite-API via pip
+- name: Install Carbon, Whisper and Graphite-Web via pip
   pip:
      name: "{{ item }}"
   with_items:
        - https://github.com/graphite-project/whisper/tarball/master
        - https://github.com/graphite-project/carbon/tarball/master
-       - https://github.com/brutasse/graphite-api/tarball/master
+       - https://github.com/graphite-project/graphite-web/tarball/master
        - gunicorn
+  register: graphite_web_installed
+       
+- name: Build graphite-web database
+  command: sudo PYTHONPATH=/opt/graphite/webapp django-admin.py migrate --settings=graphite.settings --run-syncdb
+  when: 
+    - graphite_web_installed is defined
+
        
 - name: Install init.d carbon-cache
   copy:
@@ -35,22 +42,23 @@
      dest: /etc/conf.d/carbon-cache
      mode: 0440
 
-- name: Install init.d graphite-api
-  copy:
-     src: graphite-api.init.d
-     dest: /etc/init.d/graphite-api
-     mode: 0755
-    
-- name: Install conf.d graphite-api
+- name: Install nginx.conf for graphite-web
   template:
-     src: graphite-api.conf.d.j2
-     dest: /etc/conf.d/graphite-api
-     mode: 0440
-     
-- name: Configure Graphite-API
+     src: nginx.conf.j2
+     dest: /etc/nginx/conf.d/default.conf
+     mode: 0755
+  notify: Reload nginx
+
+- name: Install init.d graphite-web
   copy:
-     src: graphite-api.yaml
-     dest: /etc/graphite-api.yaml
+     src: graphite-web.init.d
+     dest: /etc/init.d/graphite-web
+     mode: 0755
+
+- name: Install conf.d Graphite-web
+  copy:
+     src: graphite-web.conf.d
+     dest: /etc/conf.d/graphite-web
      mode: 0440
 
 - name: Configure Carbon-cache
@@ -67,8 +75,8 @@
       state: started
       enabled: true
 
-- name: Start Graphite API
+- name: Start Graphite-web
   service:
-      name: graphite-api
+      name: graphite-web
       state: started
       enabled: true
