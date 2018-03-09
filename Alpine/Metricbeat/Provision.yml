@@ -3,6 +3,6 @@
 - hosts: dev-metricbeat-01
   become: true
   roles:
-    - { role: alpine_metricbeat, ship_addr: 10.0.0.151 }
+    - { role: alpine_metricbeat, ship_addr: 10.0.0.151, kibana_addr: 10.0.0.17 }
 
 ...

@@ -3,6 +3,6 @@
 - hosts: dev-filebeat-01
   become: true
   roles:
-    - { role: alpine_filebeat, ship_addr: 10.0.0.150 }
+    - { role: alpine_filebeat, ship_addr: 10.0.0.150, kibana_addr: 10.0.0.17 }
 
 ...

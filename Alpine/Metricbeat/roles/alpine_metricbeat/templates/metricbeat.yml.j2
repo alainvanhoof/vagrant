@@ -20,6 +20,7 @@ metricbeat.modules:
   cpu_ticks: false
   
 output.elasticsearch:
-  hosts: ["{{ ship_addr}}:{{ ship_port }}"]
+  hosts: ["{{ ship_addr }}:{{ ship_port }}"]
 
-
+setup.kibana:
+  host: "{{ kibana_addr }}:{{ kibana_port }}"

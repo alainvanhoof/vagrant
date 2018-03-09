@@ -1,6 +1,6 @@
 #!/bin/bash
-VB_VERSION=5.2.6
-VB_RELEASE=120293
+VB_VERSION=5.2.8
+VB_RELEASE=121009
 VB_DMG=VirtualBox-${VB_VERSION}-${VB_RELEASE}-OSX.dmg
 curl -O http://download.virtualbox.org/virtualbox/${VB_VERSION}/${VB_DMG}
 hdiutil attach ./${VB_DMG}

@@ -15,4 +15,5 @@ filebeat.prospectors:
 output.elasticsearch:
   hosts: ["{{ ship_addr}}:{{ ship_port }}"]
 
-
+setup.kibana:
+  host: "{{ kibana_addr }}:{{ kibana_port }}"
