@@ -1,0 +1,44 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 2048
+    vm.cpus = 1
+    vm.linked_clone = true
+  end
+
+  config.vm.define "LSF-master" do |lsfm|
+   lsfm.vm.box = "centos/7"
+   lsfm.vm.hostname = "lsfmaster"
+   lsfm.vm.network "private_network", ip: "10.0.0.100", netmask: "255.255.255.0", virtualbox_intnet: "lsf_network"
+   lsfm.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "LSF-01" do |lsf01|
+   lsf01.vm.box = "centos/7"
+   lsf01.vm.hostname = "lsf01"
+   lsf01.vm.network "private_network", ip: "10.0.0.101", netmask: "255.255.255.0", virtualbox_intnet: "lsf_network"
+   lsf01.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "LSF-02" do |lsf02|
+   lsf02.vm.box = "centos/7"
+   lsf02.vm.hostname = "lsf02"
+   lsf02.vm.network "private_network", ip: "10.0.0.102", netmask: "255.255.255.0", virtualbox_intnet: "lsf_network"
+   lsf02.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "LSF-03" do |lsf03|
+   lsf03.vm.box = "centos/7"
+   lsf03.vm.hostname = "lsf03"
+   lsf03.vm.network "private_network", ip: "10.0.0.103", netmask: "255.255.255.0", virtualbox_intnet: "lsf_network"
+   lsf03.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "LSF-04" do |lsf04|
+   lsf04.vm.box = "centos/7"
+   lsf04.vm.hostname = "lsf04"
+   lsf04.vm.network "private_network", ip: "10.0.0.104", netmask: "255.255.255.0", virtualbox_intnet: "lsf_network"
+   lsf04.vm.provision "shell", path: "Provision.sh"
+  end
+
+end
