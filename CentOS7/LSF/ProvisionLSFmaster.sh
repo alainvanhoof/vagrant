@@ -7,6 +7,21 @@ yum -y install ed
 #setenforce 0
 #sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/"  /etc/sysconfig/selinux
 
+cat >> /etc/hosts << EOF
+
+10.0.0.100 lsfmaster
+10.0.0.101 lsf01 
+10.0.0.102 lsf02
+10.0.0.103 lsf03
+10.0.0.104 lsf04
+EOF
+
+mkdir /root/.ssh
+chmod 500 /root/.ssh
+cp /vagrant/id_rsa* /root/.ssh/.
+cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+chmod 400 /root/.ssh/*
+
 cat > /etc/exports << EOF
 /export/lsf  10.0.0.0/24(rw,sync,no_subtree_check,no_root_squash)
 /export/home 10.0.0.0/24(rw,sync,no_subtree_check,no_root_squash)
