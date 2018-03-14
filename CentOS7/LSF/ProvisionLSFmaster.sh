@@ -1,14 +1,11 @@
 # EPEL and Update
 #yum -y install epel-release
-yum -y update
+#yum -y update
+
 yum -y install ed
 
-# Disable SELinux
-#setenforce 0
-#sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/"  /etc/sysconfig/selinux
-
 cat >> /etc/hosts << EOF
-
+# LSF
 10.0.0.100 lsfmaster
 10.0.0.101 lsf01 
 10.0.0.102 lsf02
@@ -17,9 +14,13 @@ cat >> /etc/hosts << EOF
 EOF
 
 mkdir /root/.ssh
-chmod 500 /root/.ssh
 cp /vagrant/id_rsa* /root/.ssh/.
 cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+cat >> root/.ssh/config << EOF
+Host *
+    StrictHostKeyChecking no
+EOF
+chmod 700 /root/.ssh
 chmod 400 /root/.ssh/*
 
 cat > /etc/exports << EOF
@@ -46,3 +47,7 @@ mkdir -p /glb/home
 chmod 777 /glb/home
 mount -t nfs 10.0.0.100:/export/home /glb/home
 useradd -d /glb/home/lsfuser -m lsfuser
+cat >> /glb/home/lsfuser/.bashrc << EOF
+
+source /opt/lsf/conf/profile.lsf
+EOF
