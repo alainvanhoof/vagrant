@@ -1,0 +1,44 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provider 'virtualbox' do |vm|
+    vm.memory = 2048
+    vm.cpus = 1
+    vm.linked_clone = true
+  end
+
+  config.vm.define "Lustre-01" do |lustre01|
+   lustre01.vm.box = "centos/7"
+   lustre01.vm.hostname = "lustre01"
+   lustre01.vm.provider "virtualbox" do |vb|
+     vb.customize ['createhd', '--filename', '.vagrant/L01D01.vdi', '--variant', 'Fixed', '--size', 4 * 1024]
+     vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', '.vagrant/L01D01.vdi']
+     vb.customize ['createhd', '--filename', '.vagrant/L01D02.vdi', '--variant', 'Fixed', '--size', 4 * 1024]
+     vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 1, '--type', 'hdd', '--medium', '.vagrant/L01D02.vdi']
+   end
+   lustre01.vm.network "private_network", ip: "10.0.0.201", netmask: "255.255.255.0", virtualbox_intnet: "hpc_network"
+   lustre01.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Lustre-02" do |lustre02|
+   lustre02.vm.box = "centos/7"
+   lustre02.vm.hostname = "lustre02"
+   lustre02.vm.provider "virtualbox" do |vb|
+     vb.customize ['createhd', '--filename', '.vagrant/L02D01.vdi', '--variant', 'Fixed', '--size', 4 * 1024]
+     vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', '.vagrant/L02D01.vdi']
+     vb.customize ['createhd', '--filename', '.vagrant/L02D02.vdi', '--variant', 'Fixed', '--size', 4 * 1024]
+     vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 1, '--type', 'hdd', '--medium', '.vagrant/L02D02.vdi']
+   end
+   
+   lustre02.vm.network "private_network", ip: "10.0.0.202", netmask: "255.255.255.0", virtualbox_intnet: "hpc_network"
+   lustre02.vm.provision "shell", path: "Provision.sh"
+  end
+
+  config.vm.define "Lustre-03" do |lustre03|
+   lustre03.vm.box = "centos/7"
+   lustre03.vm.hostname = "lustre03"
+   lustre03.vm.network "private_network", ip: "10.0.0.203", netmask: "255.255.255.0", virtualbox_intnet: "hpc_network"
+   lustre03.vm.provision "shell", path: "ProvisionClient.sh"
+  end
+
+end
+

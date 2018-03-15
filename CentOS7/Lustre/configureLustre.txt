@@ -1,0 +1,35 @@
+### lustre01
+
+# Management Server (MGS)
+
+# Management Server Target (MGT)
+mkfs.lustre --mgs /dev/sdb
+mkdir /mnt/mgt
+mount -t lustre /dev/sdb /mnt/mgt
+
+# Metadata Server (MDS)
+
+# Metadata Server Target (MDT)
+mkfs.lustre --fsname=lustre --mgsnode=lustre01@tcp --mdt --index=0 /dev/sdc
+mkdir /mnt/mdt
+mount -t lustre /dev/sdc /mnt/mdt
+
+### lustre02
+
+# Object Storage Server (OSS)
+
+# Object Storage Target (OST)
+mkfs.lustre --fsname=lustre --ost --mgsnode=lustre01@tcp --index=0 /dev/sdb
+mkdir /mnt/ost0 
+mount -t lustre /dev/sdb /mnt/ost0
+
+# Object Storage Target (OST)
+mkfs.lustre --fsname=lustre --ost --mgsnode=lustre01@tcp --index=1 /dev/sdc
+mkdir /mnt/ost1
+mount -t lustre /dev/sdc /mnt/ost1
+
+### lustre03
+
+# Lustre Client
+mkdir /mnt/lustre
+mount -t lustre lustre01@tcp:/lustre /mnt/lustre
