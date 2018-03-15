@@ -1,8 +1,10 @@
 export VM_PORT=$(vagrant ssh-config LSF-master | grep Port | awk '{print $2'})
 export VM_HOST=$(vagrant ssh-config LSF-master | grep HostName | awk '{print $2'})
 scp -P ${VM_PORT} ~/Downloads/lsfsce10.2-x86_64.tar.gz vagrant@${VM_HOST}:/home/vagrant/.
+
 vagrant ssh LSF-master
 sudo su - 
+
 cd /home/vagrant
 tar -zxf /home/vagrant/lsfsce10.2-x86_64.tar.gz
 cd /home/vagrant/lsfsce10.2-x86_64/lsf
@@ -16,7 +18,9 @@ LSF_MASTER_LIST="lsfmaster"
 LSF_ADD_SERVERS="lsf01 lsf02 lsf03 lsf04"
 EOF
 ./lsfinstall -f ./install.config
+
 cd ~
+chown root:root /root
 cat >> /opt/lsf/conf/lsf.conf << EOF
 LSF_RSH=ssh
 EOF
