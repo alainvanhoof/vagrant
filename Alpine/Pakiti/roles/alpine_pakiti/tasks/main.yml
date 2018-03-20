@@ -1,0 +1,54 @@
+---
+# tasks file for alpine_pakiti
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - git
+      - php5-cli
+      - php5-mysqli
+      - php5-xml
+      - php5-dom
+      - php5-openssl
+  
+- name: Get Pakiti3 via GIT
+  git:
+    repo: 'https://github.com/CESNET/pakiti3'
+    dest: /var/www/pakiti3
+  tags: pakiti
+    
+- name: Create /etc/pakiti
+  file:
+     dest: /etc/pakiti
+     state: directory
+     mode: 0755
+     
+- name: Install pakiti config
+  template:
+      src: Config.php.j2
+      dest: /etc/pakiti/Config.php
+      mode: 0755
+      
+- name: Give User {{ mariadb_user }} of {{ mariadb_name }} GRANT 
+  mysql_user:
+    name: "{{ mariadb_user }}"
+    password: "{{ mariadb_pass }}"
+    priv: '{{ mariadb_name }}.*:ALL,GRANT'
+    state: present
+
+- name: Run php initDB.php for initalize database and create user which is defined in Config.php 
+  shell: "php5 /var/www/pakiti3/install/initDB.php --user={{ mariadb_user }} --password={{ mariadb_pass }}"
+  args:
+    chdir: '/var/www/pakiti3/install'
+  tags: pakiti
+  
+- name: install default.conf for Nginx
+  copy: 
+    src: default.conf
+    dest: /etc/nginx/conf.d/default.conf
+  notify: Reload nginx
+  
+...

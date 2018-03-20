@@ -1,0 +1,9 @@
+---
+
+- hosts: dev-pakiti-01
+  become: true
+  roles:
+    - { role: alpine_mariadb, mariadb_listen_addr: 127.0.0.1, mariadb_name: pakiti, mariadb_user: pakiti_user, mariadb_pass: pakiti_pass }
+    - { role: alpine_nginx, php5: yes }
+    - { role: alpine_pakiti, mariadb_name: pakiti, mariadb_user: pakiti_user, mariadb_pass: pakiti_pass }
+...
