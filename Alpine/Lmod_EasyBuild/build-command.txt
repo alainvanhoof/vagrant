@@ -1,0 +1,14 @@
+
+mkfs.ext4 /dev/sdb
+mount /dev/sdb /mnt
+mkdir /mnt/build
+mkdir /mnt/source
+chown eb /mnt/build
+chown eb /mnt/source
+chown eb /opt/apps
+
+export LMOD_PAGER="None"
+ml use /opt/modules/all
+eb /usr/easybuild/easyconfigs/h/htop-2.0.1.eb
+
+
