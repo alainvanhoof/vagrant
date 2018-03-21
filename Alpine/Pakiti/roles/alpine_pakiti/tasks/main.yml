@@ -13,7 +13,8 @@
       - php5-xml
       - php5-dom
       - php5-openssl
-  
+  notify: Restart php-fpm
+ 
 - name: Get Pakiti3 via GIT
   git:
     repo: 'https://github.com/CESNET/pakiti3'
