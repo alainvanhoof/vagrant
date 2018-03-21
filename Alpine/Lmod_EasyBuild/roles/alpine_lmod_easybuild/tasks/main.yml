@@ -15,13 +15,17 @@
       - coreutils
       - procps
       - alpine-sdk
+      - linux-headers
       - py2-pip
       
 - name: Create /opt/apps
   file:
      dest: /opt/apps
      state: directory
-     mode: 0755  
+     mode: 0755
+
+- name: "Create user for EasyBuild : eb"
+  command: adduser -D -s /bin/bash eb
          
 - name: Get Lmod
   unarchive:
@@ -45,3 +49,9 @@
 - name: Install EasyBuild
   pip:
       name: easybuild
+      
+- name: Configure EasyBuild for System
+  copy:
+      src: config.cfg
+      dest: /etc/easybuild.d/config.cfg
+      mode: 0640
