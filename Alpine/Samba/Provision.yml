@@ -1,0 +1,12 @@
+---
+
+- hosts: dev-samba-01
+  become: true
+  vars:
+    smb_shares: 
+      - { share: /mnt/A, share_name: A } 
+      - { share: /mnt/B, share_name: B } 
+  roles:
+    - { role: alpine_samba } 
+
+...

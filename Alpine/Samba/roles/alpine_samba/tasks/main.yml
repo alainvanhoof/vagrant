@@ -1,0 +1,32 @@
+---
+# tasks file for alpine_samba
+
+- name: Install packages needed
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+      - samba
+      - samba-common-tools
+      
+- name: Create {{ share }}
+  file:
+     dest: "{{ item.share }}"
+     state: directory
+     mode: 0777
+  with_items: 
+     "{{ smb_shares }}"
+
+- name: Configure Samba
+  template: 
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+
+- name: Start Samba
+  service:
+    name: samba
+    state: started
+    enabled: true
+
+...

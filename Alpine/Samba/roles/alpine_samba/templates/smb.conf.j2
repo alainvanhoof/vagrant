@@ -1,0 +1,15 @@
+[global]
+   workgroup = WORKGROUP
+   dos charset = cp850
+   unix charset = ISO-8859-1
+
+{% for share in smb_shares %}
+[{{ share.share_name }}]
+   comment = {{ share.share_name }}
+   path = {{ share.share }}
+   public = yes
+   writable = no
+   guest ok = yes
+   browseable = yes
+{% endfor %}
+
