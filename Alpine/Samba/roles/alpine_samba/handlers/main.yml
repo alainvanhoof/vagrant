@@ -1,2 +1,8 @@
 ---
 # handlers file for alpine_samba
+
+- name: Restart samba
+  service:
+    name: samba
+    state: restarted
+  

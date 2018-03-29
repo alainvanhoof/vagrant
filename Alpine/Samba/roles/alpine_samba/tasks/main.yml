@@ -22,6 +22,7 @@
   template: 
     src: smb.conf.j2
     dest: /etc/samba/smb.conf
+  notify: Restart samba
 
 - name: Start Samba
   service:
