@@ -1,4 +1,4 @@
 ---
 # defaults file for alpine_grafana
 
-grafana_version: 5.0.1
+grafana_version: 5.0.4
