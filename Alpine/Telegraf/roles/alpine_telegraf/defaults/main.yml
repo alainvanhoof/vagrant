@@ -1,5 +1,5 @@
 ---
 # defaults file for alpine_telegraf
 
-telegraf_version: 1.5.3
+telegraf_version: 1.6.2
 
