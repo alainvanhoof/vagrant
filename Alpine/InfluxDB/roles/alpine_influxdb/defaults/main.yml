@@ -1,2 +1,4 @@
 ---
 # defaults file for alpine_influxdb
+
+influxdb_version: 1.5.2

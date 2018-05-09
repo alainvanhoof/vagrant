@@ -24,7 +24,7 @@
 
 - name: Get InfluxDB 
   unarchive:
-      src: https://dl.influxdata.com/influxdb/releases/influxdb-1.4.2-static_linux_amd64.tar.gz
+      src: https://dl.influxdata.com/influxdb/releases/influxdb-{{ influxdb_version }}-static_linux_amd64.tar.gz
       dest: /opt
       extra_opts: "--strip-components=2"
       remote_src: True
