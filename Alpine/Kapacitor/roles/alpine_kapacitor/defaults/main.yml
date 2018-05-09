@@ -1,0 +1,4 @@
+---
+# defaults file for alpine_kapacitor
+
+kapacitor_version: 1.4.1

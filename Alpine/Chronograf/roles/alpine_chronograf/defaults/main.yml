@@ -1,0 +1,4 @@
+---
+# defaults file for alpine_chronograf
+
+chronograf_version: 1.4.4.2

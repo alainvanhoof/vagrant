@@ -1,0 +1,45 @@
+---
+# tasks file for alpine_chronograf
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755  
+
+- name: Get Chronograf
+  unarchive:
+      src: https://dl.influxdata.com/chronograf/releases/chronograf-{{ chronograf_version }}-static_linux_amd64.tar.gz
+      dest: /opt
+      remote_src: True
+      extra_opts: "--strip-components=2"
+      creates: /opt/chronograf
+      
+- name: Install Chronograf init.d
+  copy:
+      src: chronograf.init.d
+      dest: /etc/init.d/chronograf
+      mode: 0755  
+
+- name: Install Chronograf conf.d
+  copy:
+      src: chronograf.conf.d
+      dest: /etc/conf.d/chronograf
+      mode: 0440
+      
+- name: Start Chronograf 
+  service:
+      name: chronograf
+      state: started
+      enabled: true
+         
+...
