@@ -24,9 +24,16 @@
      state: directory
      mode: 0755
 
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: eb
+      fail_key: false
+      
 - name: "Create user for EasyBuild : eb"
   command: adduser -D -s /bin/bash eb
-         
+  when: not getent_passwd.eb
+
 - name: Get Lmod
   unarchive:
       src: https://github.com/TACC/Lmod/archive/{{ Lmod_version }}.tar.gz
@@ -50,8 +57,14 @@
   pip:
       name: easybuild
       
+- name: Create /etc/easybuild.d
+  file:
+     dest: /etc/easybuild.d
+     state: directory
+     mode: 0755
+           
 - name: Configure EasyBuild for System
   copy:
       src: config.cfg
       dest: /etc/easybuild.d/config.cfg
-      mode: 0640
+      mode: 0644
