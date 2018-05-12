@@ -28,12 +28,6 @@
       dest: /opt
       remote_src: True
       creates: /opt/node_exporter-{{ node_exporter_version }}.linux-amd64
-
-#- name: Configure Node_Exporter
-#  copy: 
-#     src: node_exporter.yml
-#     dest: /opt/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter.yml
-#     mode: 0644
            
 - name: Install Node_Exporter init.d
   template:
