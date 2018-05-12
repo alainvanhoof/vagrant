@@ -1,5 +1,5 @@
 ---
 # defaults file for alpine_go_server
 
-go_server_version: 18.2.0
-go_server_build: 6228
+go_server_version: 18.5.0
+go_server_build: 6679

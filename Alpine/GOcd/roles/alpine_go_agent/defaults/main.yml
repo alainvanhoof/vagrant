@@ -1,6 +1,6 @@
 ---
 # defaults file for alpine_go_agent
 
-go_agent_version: 18.2.0
-go_agent_build: 6228
+go_agent_version: 18.5.0
+go_agent_build: 6679
 go_agent_server: 127.0.0.1
