@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+
+USER=alertmanager
+GROUP=alertmanager
+SERVICE="alertmanager"
+COMMAND="/opt/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager"
+CMD_ARGS="${ALERTMANAGER_OPTS}"
+DIR="/opt/alertmanager-{{ alertmanager_version }}.linux-amd64"
+LOG_FILE="/var/log/alertmanager.log"
+
+depend() {
+    need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting ${SERVICE}"
+    start-stop-daemon --background --start \
+    --make-pidfile --pidfile /run/${SERVICE}.pid \
+    --exec ${COMMAND} \
+    --user ${USER:-root} \
+    --group ${GROUP:-root} \
+    --chdir ${DIR} \
+    --stdout ${LOG_FILE} \
+    --stderr ${LOG_FILE} \
+    -- ${CMD_ARGS}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SERVICE}"
+    start-stop-daemon --stop --exec ${COMMAND} \
+    --pidfile /run/${SERVICE}.pid
+    eend $?
+}

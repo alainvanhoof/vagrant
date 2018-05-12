@@ -1,0 +1,6 @@
+---
+# defaults file for alpine_prometheus_node_exporter
+
+node_exporter_version: 0.15.2
+node_exporter_listen_addr: 127.0.0.1
+node_exporter_listen_port: 9100

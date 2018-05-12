@@ -1,0 +1,8 @@
+---
+
+- hosts: dev-alertmanager-01
+  become: true
+  roles:
+    - { role: alpine_prometheus_alertmanager, alertmanager_listen_addr: "{{ ansible_eth1.ipv4.address }}" }
+
+...

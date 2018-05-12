@@ -1,4 +1,4 @@
-cluster = [ { :name => "dev-prometheus-01", :ip => "10.0.0.30" , :net => "dev.net"} ]
+cluster = [ { :name => "dev-alertmanager-01", :ip => "10.0.0.35" , :net => "dev.net"} ]
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
@@ -13,7 +13,6 @@ Vagrant.configure("2") do |config|
     config.vm.define node[:name] do |config|
       config.vm.hostname = node[:name]
       config.vm.network "private_network", ip: node[:ip], netmask: "255.255.255.0", virtualbox_intnet: node[:net]
-      config.vm.network "forwarded_port", guest: 9090, host: 9090
       config.vm.provision "ansible", playbook: "Provision.yml"
     end
  end

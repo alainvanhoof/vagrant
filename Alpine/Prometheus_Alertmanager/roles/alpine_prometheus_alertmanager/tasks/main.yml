@@ -1,0 +1,83 @@
+---
+# tasks file for alpine_prometheus_alertmanager
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+
+- name: Check if user excists
+  getent: 
+      database: passwd
+      key: alertmanager
+      fail_key: false
+      
+- name: Create user for Alertmanager
+  command: adduser alertmanager -DH -s /sbin/nologin -h /opt/alertmanager-{{ alertmanager_version}}.linux-amd64
+  when: not getent_passwd.alertmanager
+           
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755
+     
+- name: Create /etc/alertmanager/template/
+  file:
+     dest: /etc/alertmanager/template/
+     state: directory
+     owner: alertmanager
+     group: alertmanager
+     mode: 0755         
+     
+- name: Create Alertmanager log file
+  file:
+     path: /var/log/alertmanager.log
+     state: touch
+     owner: alertmanager
+     group: alertmanager
+     mode: 0600  
+
+- name: Get Prometheus Alertmanager
+  unarchive:
+      src: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/alertmanager-{{ alertmanager_version }}.linux-amd64
+
+- name: Configure Alertmanager
+  copy: 
+     src: alertmanager.yml
+     dest: /opt/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager.yml
+     mode: 0644
+      
+- name: Let user own /opt/alertmanager-{{ alertmanager_version }}.linux-amd64
+  file:
+     dest: /opt/alertmanager-{{ alertmanager_version }}.linux-amd64
+     state: directory
+     owner: alertmanager
+     group: alertmanager
+     recurse: true 
+     
+- name: Install Alertmanager init.d
+  template:
+      src: alertmanager.init.d.j2
+      dest: /etc/init.d/alertmanager
+      mode: 0755  
+
+- name: Install Alertmanager conf.d
+  template:
+      src: alertmanager.conf.d.j2
+      dest: /etc/conf.d/alertmanager
+      mode: 0440
+      
+- name: Start Alertmanager
+  service:
+      name: alertmanager
+      state: started
+      enabled: true
+         

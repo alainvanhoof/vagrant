@@ -1,0 +1,56 @@
+---
+# tasks file for alpine_prometheus_node_exporter
+
+- name: Install packages
+  apk:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+      - ca-certificates
+      - tar
+      
+- name: Create /opt
+  file:
+     dest: /opt
+     state: directory
+     mode: 0755
+          
+- name: Create Node_Exporter log file
+  file:
+     path: /var/log/node_exporter.log
+     state: touch
+     mode: 0600  
+
+- name: Get Prometheus Node_Exporter
+  unarchive:
+      src: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+      dest: /opt
+      remote_src: True
+      creates: /opt/node_exporter-{{ node_exporter_version }}.linux-amd64
+
+#- name: Configure Node_Exporter
+#  copy: 
+#     src: node_exporter.yml
+#     dest: /opt/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter.yml
+#     mode: 0644
+           
+- name: Install Node_Exporter init.d
+  template:
+      src: node_exporter.init.d.j2
+      dest: /etc/init.d/node_exporter
+      mode: 0755  
+
+- name: Install Node_Exporter conf.d
+  template:
+      src: node_exporter.conf.d.j2
+      dest: /etc/conf.d/node_exporter
+      mode: 0440
+      
+- name: Start Node_Exporter
+  service:
+      name: node_exporter
+      state: started
+      enabled: true
+
+...

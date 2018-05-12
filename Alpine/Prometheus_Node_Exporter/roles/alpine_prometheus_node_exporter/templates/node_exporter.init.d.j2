@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+
+USER=root
+GROUP=root
+SERVICE="node_exporter"
+COMMAND="/opt/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+CMD_ARGS="${NODE_EXPORTER_OPTS}"
+DIR="/opt/node_exporter-{{ node_exporter_version }}.linux-amd64"
+LOG_FILE="/var/log/node_exporter.log"
+
+depend() {
+    need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting ${SERVICE}"
+    start-stop-daemon --background --start \
+    --make-pidfile --pidfile /run/${SERVICE}.pid \
+    --exec ${COMMAND} \
+    --user ${USER:-root} \
+    --group ${GROUP:-root} \
+    --chdir ${DIR} \
+    --stdout ${LOG_FILE} \
+    --stderr ${LOG_FILE} \
+    -- ${CMD_ARGS}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SERVICE}"
+    start-stop-daemon --stop --exec ${COMMAND} \
+    --pidfile /run/${SERVICE}.pid
+    eend $?
+}

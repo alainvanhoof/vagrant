@@ -1,0 +1,6 @@
+---
+# defaults file for alpine_prometheus_alertmanager
+
+alertmanager_version: 0.14.0
+alertmanager_listen_addr: 127.0.0.1
+alertmanager_listen_port: 9093
