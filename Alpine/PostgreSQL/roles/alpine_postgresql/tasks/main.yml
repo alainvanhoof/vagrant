@@ -44,6 +44,7 @@
   postgresql_db:
     name: "{{ pg_db_name }}"
     encoding: "{{ pg_db_encoding }}"
+    template: template0
   when: pg_standby is undefined
 
 - name: Create PostgreSQL User {{ pg_db_user }} of {{ pg_db_name }}
