@@ -12,7 +12,7 @@
 
 - name: Get the key for glibc 
   get_url:
-    url: https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+    url: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
     dest: /etc/apk/keys/sgerrand.rsa.pub
     mode: 0440
 
