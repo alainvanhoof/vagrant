@@ -35,7 +35,7 @@
       
 - name: Get Grafana
   unarchive:
-      src: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-{{ grafana_version }}.linux-x64.tar.gz
+      src: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-{{ grafana_version }}.linux-amd64.tar.gz
       dest: /opt
       remote_src: True
       creates: /opt/grafana-{{ grafana_version }}
