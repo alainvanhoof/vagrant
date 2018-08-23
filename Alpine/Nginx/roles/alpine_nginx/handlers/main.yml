@@ -15,3 +15,8 @@
   service:
     name: php-fpm
     state: restarted
+
+- name: Restart php-fpm7
+  service:
+    name: php-fpm7
+    state: restarted
