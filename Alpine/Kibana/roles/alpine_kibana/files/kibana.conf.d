@@ -1,1 +1,0 @@
-KIBANA_OPTS=""
