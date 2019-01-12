@@ -16,7 +16,7 @@
 - name: fix init script to enable guardian
   lineinfile:
     dest: /etc/init.d/pdns
-    regexp: 'command_args="${command_args:-} --guardian=no --daemon=no --write-pid=no $pdns_config"'
+    regexp: 'command_args=.*'
     line: 'command_args="${command_args:-} --guardian=yes --daemon=no --write-pid=no $pdns_config"'
   when: pdns_authoritive is defined
 
