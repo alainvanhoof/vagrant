@@ -3,13 +3,9 @@
 
 - name: Install packages
   apk:
-    name: "{{ item }}"
+    name: ["openjdk8-jre","tar","coreutils","libc6-compat"]
     state: present
     update_cache: True
-  with_items:
-      - openjdk8-jre
-      - tar
-      - coreutils
 
 - name: Check if user excists
   getent: 
