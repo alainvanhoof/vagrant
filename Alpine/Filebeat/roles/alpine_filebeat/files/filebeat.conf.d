@@ -1,1 +1,0 @@
-FILEBEAT_OPTS=""

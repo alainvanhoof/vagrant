@@ -1,9 +1,0 @@
----
-# defaults file for alpine_filebeat
-
-filebeat_version: 6.2.3-linux-x86_64
-ship_addr: 127.0.0.1
-ship_port: 9200
-kibana_addr: 127.0.0.1
-kibana_port: 5601
-

@@ -1,8 +1,0 @@
----
-
-- hosts: dev-kibana-01
-  become: true
-  roles:
-    - { role: alpine_kibana, kibana_addr: "{{ ansible_eth1.ipv4.address }}", es_addr: 10.0.0.150 }
-
-...
