@@ -1,6 +1,6 @@
 ---
 
-- hosts: dev-host01
+- hosts: dev-host-01
   become: true
   tasks:
   - name: update the apk cache
